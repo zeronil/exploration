@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<component name="HeroScene" extends="Scene" >
+
+  <interface>
+    <field id="content" type="node" alias="HeroScreen.content" onChange="onHeroContentChange" />
+    <field id="rowItemSelected" type="intarray" alias="HeroScreen.rowItemSelected" alwaysNotify="true" onChange="onHeroRowItemSelected" />
+    <field id="numBadRequests" type="integer" value="0" alias="HeroScreen.numBadRequests" />
+  </interface>
+
+  <script type="text/brightscript" uri="pkg:/components/HeroScene.brs" />
+
+  <children>
+
+    <!-- HeroScreen with RowList
+         When this UI component is created, HeroScreen's init() will begin loading the data that is used
+         to construct the content for each row  -->
+
+    <HeroScreen
+      id="HeroScreen"
+      visible="true"
+      translation="[0,0]"/>
+
+    <!-- Overhang Node -->
+
+    <Overhang
+      id="OverhangBar"
+      showClock="true"
+      color="0xFF0000FF"
+      showOptions="true"
+      optionsAvailable="true"
+      title="Exploration" />
+
+    <!-- OptionsScreen  -->
+
+    <OptionsScreen
+      id="OptionsScreen"
+      visible="false" />
+
+    <!-- DetailsScreen with play button -->
+
+    <DetailsScreen
+      id="DetailsScreen"
+      visible="false" />
+
+    <!-- Warning if bad URL request/timeout -->
+
+    <Dialog
+      id="WarningDialog"
+      title="Content Loading Failed"
+      message="The content is not available at this time. Press option '*' to continue to a blank channel or 'home' to exit."
+      visible="false" />
+
+    <!-- The spinning wheel for when content is loading -->
+
+    <LoadingIndicator
+      id="LoadingIndicator"
+      imageUri="pkg:/components/LoadingIndicator/loader.png"
+      clockwise="true"
+      spinInterval="2"
+      fadeInterval="0.5"
+      spacing="20"
+      imageWidth="100"
+      text="Loading..."
+      width="1920"
+      height="1080"
+      centered="false"
+      translation="[0, 0]"
+      textPadding="10"
+      font="font:SmallBoldSystemFont"
+      backgroundColor="0x551A8B"
+      backgroundOpacity="0"/>
+
+    <!-- Animation to fade IN the OptionsScreen and fade OUT the HeroScreen -->
+
+    <ParallelAnimation id="FadeInOptions">
+
+      <Animation
+        id="HeroToOptionsFadeOut"
+        duration=".4"
+        repeat="false"
+        easeFunction="inQuad">
+        <FloatFieldInterpolator
+          id="HeroToOptionsFadeOutInterp"
+          key="[0,1]"
+          keyValue="[1.0, 0.0]"
+          fieldToInterp="HeroScreen.opacity"/>
+      </Animation>
+
+      <Animation
+        id="OptionsFromHeroFadeIn"
+        duration=".4"
+        repeat="false"
+        easeFunction="inQuad">
+        <FloatFieldInterpolator
+          id="OptionsFromHeroFadeInInterp"
+          key="[0,1]"
+          keyValue="[0.0, 1.0]"
+          fieldToInterp="OptionsScreen.opacity"/>
+      </Animation>
+
+    </ParallelAnimation>
+
+    <!-- Animation to fade IN the HeroScreen and fade OUT the OptionsScreen -->
+
+    <ParallelAnimation id="FadeOutOptions">
+
+      <Animation
+        id="HeroFromOptionsFadeIn"
+        duration=".4"
+        repeat="false"
+        easeFunction="inQuad">
+        <FloatFieldInterpolator
+          id="HeroFromOptionsFadeInInterp"
+          key="[0,1]"
+          keyValue="[0.0, 1.0]"
+          fieldToInterp="HeroScreen.opacity"/>
+      </Animation>
+
+      <Animation
+        id="OptionsToHeroFadeOut"
+        duration=".4"
+        repeat="false"
+        easeFunction="inQuad">
+        <FloatFieldInterpolator
+          id="OptionsToHeroFadeOutInterp"
+          key="[0,1]"
+          keyValue="[1.0, 0.0]"
+          fieldToInterp="OptionsScreen.opacity"/>
+      </Animation>
+
+      <Animation
+        id="OverhangFadeInColor"
+        duration=".4"
+        repeat="false"
+        easeFunction="inQuad">
+        <ColorFieldInterpolator
+          id="OverhangFadeInColorInterp"
+          key="[0,1]"
+          keyValue="[0x333333FF, 0xFF0000FF]"
+          fieldToInterp="OverhangBar.color"/>
+      </Animation>
+
+    </ParallelAnimation>
+
+    <!-- Animation to fade IN the DetailsScreen and fade OUT the HeroScreen -->
+
+    <ParallelAnimation id="FadeInDetails">
+
+      <Animation
+        id="HeroToDetailsFadeOut"
+        duration=".4"
+        repeat="false"
+        easeFunction="inQuad">
+        <FloatFieldInterpolator
+          id="HeroToDetailsFadeOutInterp"
+          key="[0,1]"
+          keyValue="[1.0, 0.0]"
+          fieldToInterp="HeroScreen.opacity"/>
+      </Animation>
+
+      <Animation
+        id="DetailsFromHeroFadeIn"
+        duration=".4"
+        repeat="false"
+        easeFunction="inQuad">
+        <FloatFieldInterpolator
+          id="DetailsFromHeroFadeInInterp"
+          key="[0,1]"
+          keyValue="[0.0, 1.0]"
+          fieldToInterp="DetailsScreen.opacity"/>
+      </Animation>
+
+    </ParallelAnimation>
+
+    <!-- Animation to fade IN the HeroScreen and fade OUT the DetailsScreen -->
+
+    <ParallelAnimation id="FadeOutDetails">
+
+      <Animation
+        id="HeroFromDetailsFadeIn"
+        duration=".4"
+        repeat="false"
+        easeFunction="inQuad">
+        <FloatFieldInterpolator
+          id="HeroFromDetailsFadeInInterp"
+          key="[0,1]"
+          keyValue="[0.0, 1.0]"
+          fieldToInterp="HeroScreen.opacity"/>
+      </Animation>
+
+      <Animation
+        id="DetailsToHeroFadeOut"
+        duration=".4"
+        repeat="false"
+        easeFunction="inQuad">
+        <FloatFieldInterpolator
+          id="DetailsToHeroFadeOutInterp"
+          key="[0,1]"
+          keyValue="[1.0, 0.0]"
+          fieldToInterp="DetailsScreen.opacity"/>
+      </Animation>
+
+    </ParallelAnimation>
+
+  </children>
+
+</component>

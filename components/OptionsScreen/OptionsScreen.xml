@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<component name="OptionsScreen" extends="Group" initialFocus="Buttons">
+
+  <interface>
+
+    <!-- Button press handler -->
+
+    <field id="itemSelected" type="integer" alwaysnotify="true" alias="Buttons.itemSelected" onChange="onItemSelected" />
+
+    <!-- Content fields -->
+
+    <field id="content" type="node" alwaysnotify="true" onChange="onContentChange" />
+
+  </interface>
+
+  <script type="text/brightscript" uri="pkg:/components/OptionsScreen/OptionsScreen.brs" />
+
+  <children>
+
+    <!-- Dark background -->
+
+    <Rectangle
+      id="HUDRectangle"
+      color="0x333333FF"
+      width="1920"
+      height="1080" />
+
+    <!-- Control buttons (Button List) -->
+
+    <LabelList
+      id="Buttons"
+      translation="[225,250]"
+      color="0xFFFFFFFF"
+      focusedColor="0x333333FF"
+      numRows="7"
+      vertFocusAnimationStyle="floatingFocus"
+      itemSpacing="[0,20]"
+      itemSize="[300, 40]" />
+
+    <!-- Overhang Node (has to be rendered after others) -->
+
+    <Overhang
+      showClock="true"
+      showOptions="true"
+      optionsAvailable="false"
+      title="Exploration: Options" />
+
+  </children>
+
+</component>
