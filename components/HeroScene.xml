@@ -21,12 +21,29 @@
       visible="true"
       translation="[0,0]"/>
 
+    <!-- Solid color background for Overhang (setting color on the Overhang itself
+         results in the color being extended below the bottom shaded area). -->
+
+    <Rectangle
+      id="OverhangBackground"
+      color="0xFF0000"
+      width="1920"
+      height="150"
+      translation="[0,0]" />
+
+    <Rectangle
+      id="OverhangBackgroundGray"
+      color="0x333333FF"
+      opacity="0.0"
+      width="1920"
+      height="150"
+      translation="[0,0]" />
+
     <!-- Overhang Node -->
 
     <Overhang
       id="OverhangBar"
       showClock="true"
-      color="0xFF0000FF"
       showOptions="true"
       optionsAvailable="true"
       title="Exploration" />
@@ -80,11 +97,13 @@
         duration=".4"
         repeat="false"
         easeFunction="inQuad">
+
         <FloatFieldInterpolator
           id="HeroToOptionsFadeOutInterp"
           key="[0,1]"
           keyValue="[1.0, 0.0]"
           fieldToInterp="HeroScreen.opacity"/>
+
       </Animation>
 
       <Animation
@@ -92,11 +111,13 @@
         duration=".4"
         repeat="false"
         easeFunction="inQuad">
+
         <FloatFieldInterpolator
           id="OptionsFromHeroFadeInInterp"
           key="[0,1]"
           keyValue="[0.0, 1.0]"
           fieldToInterp="OptionsScreen.opacity"/>
+
       </Animation>
 
     </ParallelAnimation>
@@ -110,11 +131,13 @@
         duration=".4"
         repeat="false"
         easeFunction="inQuad">
+
         <FloatFieldInterpolator
           id="HeroFromOptionsFadeInInterp"
           key="[0,1]"
           keyValue="[0.0, 1.0]"
           fieldToInterp="HeroScreen.opacity"/>
+
       </Animation>
 
       <Animation
@@ -122,23 +145,27 @@
         duration=".4"
         repeat="false"
         easeFunction="inQuad">
+
         <FloatFieldInterpolator
           id="OptionsToHeroFadeOutInterp"
           key="[0,1]"
           keyValue="[1.0, 0.0]"
           fieldToInterp="OptionsScreen.opacity"/>
+
       </Animation>
 
       <Animation
-        id="OverhangFadeInColor"
+        id="OverhangFadeGray"
         duration=".4"
         repeat="false"
         easeFunction="inQuad">
-        <ColorFieldInterpolator
-          id="OverhangFadeInColorInterp"
+
+        <FloatFieldInterpolator
+          id="OverhangFadeGrayInterp"
           key="[0,1]"
-          keyValue="[0x333333FF, 0xFF0000FF]"
-          fieldToInterp="OverhangBar.color"/>
+          keyValue="[1.0, 0.0]"
+          fieldToInterp="OverhangBackgroundGray.opacity"/>
+
       </Animation>
 
     </ParallelAnimation>
@@ -152,11 +179,13 @@
         duration=".4"
         repeat="false"
         easeFunction="inQuad">
+
         <FloatFieldInterpolator
           id="HeroToDetailsFadeOutInterp"
           key="[0,1]"
           keyValue="[1.0, 0.0]"
           fieldToInterp="HeroScreen.opacity"/>
+
       </Animation>
 
       <Animation
@@ -164,11 +193,13 @@
         duration=".4"
         repeat="false"
         easeFunction="inQuad">
+
         <FloatFieldInterpolator
           id="DetailsFromHeroFadeInInterp"
           key="[0,1]"
           keyValue="[0.0, 1.0]"
           fieldToInterp="DetailsScreen.opacity"/>
+
       </Animation>
 
     </ParallelAnimation>
@@ -182,11 +213,13 @@
         duration=".4"
         repeat="false"
         easeFunction="inQuad">
+
         <FloatFieldInterpolator
           id="HeroFromDetailsFadeInInterp"
           key="[0,1]"
           keyValue="[0.0, 1.0]"
           fieldToInterp="HeroScreen.opacity"/>
+
       </Animation>
 
       <Animation
@@ -194,11 +227,13 @@
         duration=".4"
         repeat="false"
         easeFunction="inQuad">
+
         <FloatFieldInterpolator
           id="DetailsToHeroFadeOutInterp"
           key="[0,1]"
           keyValue="[1.0, 0.0]"
           fieldToInterp="DetailsScreen.opacity"/>
+
       </Animation>
 
     </ParallelAnimation>

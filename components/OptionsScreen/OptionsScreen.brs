@@ -7,48 +7,55 @@ function init()
   print "OptionsScreen.brs - [init]"
 
   m.top.observeField("visible", "onVisibleChange")
-  m.top.observeField("focusedChild", "onFocusedChildChange")
 
   m.buttons = m.top.findNode("Buttons")
-  ' m.background = m.top.findNode("Background")
+  m.buttons.observeField("itemFocused", "onItemFocused")
 
   ' Create buttons
 
   result = []
 
-  for each button in ["First button", "Second button"]
+  for each button in ["Red Banner", "Purple Banner"]
     result.push({title : button})
   end for
+
+  ' Initially selected button
+
+  m.buttons.checkedItem = 0
 
   m.buttons.content = contentList2SimpleNode(result)
 
 end function
 
 ' =============================================================================
-' onVisibleChange
+' onVisibleChange - When entering Options screen, set the focus to the first button
 ' =============================================================================
 
 sub onVisibleChange()
-
-  ' If entering Options screen, set the focus to the first button
 
   if m.top.visible
 
     print "OptionsScreen.brs - [onVisibleChange] Visible - focus first button"
 
-    ' m.fadeIn.control="start"
-    m.buttons.jumpToItem = 0
+    m.buttons.jumpToItem = m.buttons.checkedItem
     m.buttons.setFocus(true)
 
-  ' Else exiting video, so stop the video playback
+  end if
 
-  else
+end sub
 
-    print "OptionsScreen.brs - [onVisibleChange] Not visible"
+' =============================================================================
+' onItemFocused
+' =============================================================================
 
-    ' m.fadeOut.control="start"
-    ' m.background.uri=""
+sub onItemFocused()
 
+  print "OptionsScreen.brs - [onItemFocused]" m.buttons.itemFocused
+
+  if m.buttons.itemFocused = 0
+    m.buttons.focusedColor = "0xFF0000"
+  else if m.buttons.itemFocused = 1
+    m.buttons.focusedColor = "0x551A8B"
   end if
 
 end sub
@@ -61,23 +68,8 @@ sub onItemSelected()
 
   print "OptionsScreen.brs - [onItemSelected]" m.top.itemSelected
 
-  ' First button in the list is Play
-
   if m.top.itemSelected = 0
   end if
-
-end sub
-
-' =============================================================================
-' onContentChange
-' =============================================================================
-
-sub onContentChange()
-
-  print "OptionsScreen.brs - [onContentChange]"
-
-  ' m.poster.uri = m.top.content.hdBackgroundImageUrl
-  ' m.background.uri = m.top.content.hdBackgroundImageUrl
 
 end sub
 

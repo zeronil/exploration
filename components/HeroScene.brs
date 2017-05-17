@@ -15,13 +15,16 @@ sub init()
 
   m.HeroScreen = m.top.FindNode("HeroScreen")
 
-  ' Overhang Node
+  ' OverhangBackground Node
 
-  m.OverhangBar = m.top.FindNode("OverhangBar")
+  m.OverhangBackground = m.top.FindNode("OverhangBackground")
+  m.OverhangFadeInColor = m.top.findNode("OverhangFadeInColorInterp")
+  m.OverhangBackgroundGray = m.top.findNode("OverhangBackgroundGray")
 
   ' OptionsScreen node
 
   m.OptionsScreen = m.top.FindNode("OptionsScreen")
+  m.OptionsScreen.observeField("itemSelected", "onOptionSelected")
 
   ' DetailsScreen node with description & video player
 
@@ -45,6 +48,24 @@ sub init()
   ' Set focus to the scene
 
   m.top.setFocus(true)
+
+end sub
+
+' =============================================================================
+' onOptionSelected
+' =============================================================================
+
+sub onOptionSelected()
+
+  print "HeroScene.brs - [onOptionSelected]" m.OptionsScreen.itemSelected
+
+  if m.OptionsScreen.itemSelected = 0
+    m.OverhangBackground.color = "0xFF0000FF"
+  else if m.OptionsScreen.itemSelected = 1
+    m.OverhangBackground.color = "0x551A8BFF"
+  end if
+
+  fadeOutOptionsScreen()
 
 end sub
 
@@ -130,15 +151,11 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
         m.HeroScreen.setFocus(true)
         isKeyEventHandled = true
 
-      ' If OptionsScreen is displayed, then make HeroScreen visible 
+      ' If OptionsScreen is displayed, then make HeroScreen visible
 
       else if m.OptionsScreen.visible = true
         print "HeroScene.brs - [onKeyEvent] Fade out options"
-        m.OverhangBar.color = "0x333333FF"
-        m.FadeOutOptions.control = "start"
-        m.OptionsScreen.visible = "false"
-        m.HeroScreen.setFocus(true)
-        m.HeroScreen.visible = "true"
+        fadeOutOptionsScreen()
         isKeyEventHandled = true
 
       ' If Details open and video player opened, then remove the video player
@@ -190,12 +207,13 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
 
       ' Else make the OptionsScreen visible
 
-      else
+      else if m.OptionsScreen.visible = false
         print "HeroScene.brs - [onKeyEvent] OPTIONS key pressed - Fade in options"
         m.FadeInOptions.control = "start"
         m.HeroScreen.visible = "false"
         m.OptionsScreen.setFocus(true)
         m.OptionsScreen.visible = "true"
+        m.OverhangBackgroundGray.opacity = 1.0
         isKeyEventHandled = true
 
       endif
@@ -207,3 +225,18 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
   return isKeyEventHandled
 
 end function
+
+' =============================================================================
+' fadeOutOptionsScreen
+' =============================================================================
+
+sub fadeOutOptionsScreen()
+
+  print "HeroScene.brs - [fadeOutOptionsScreen]"
+
+  m.FadeOutOptions.control = "start"
+  m.OptionsScreen.visible = "false"
+  m.HeroScreen.setFocus(true)
+  m.HeroScreen.visible = "true"
+
+end sub

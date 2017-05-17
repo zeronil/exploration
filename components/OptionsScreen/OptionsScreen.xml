@@ -4,13 +4,9 @@
 
   <interface>
 
-    <!-- Button press handler -->
+    <!-- Button selected handler -->
 
     <field id="itemSelected" type="integer" alwaysnotify="true" alias="Buttons.itemSelected" onChange="onItemSelected" />
-
-    <!-- Content fields -->
-
-    <field id="content" type="node" alwaysnotify="true" onChange="onContentChange" />
 
   </interface>
 
@@ -28,7 +24,7 @@
 
     <!-- Control buttons (Button List) -->
 
-    <LabelList
+    <RadioButtonList
       id="Buttons"
       translation="[225,250]"
       color="0xFFFFFFFF"
@@ -36,7 +32,7 @@
       numRows="7"
       vertFocusAnimationStyle="floatingFocus"
       itemSpacing="[0,20]"
-      itemSize="[300, 40]" />
+      itemSize="[400, 40]" />
 
     <!-- Overhang Node (has to be rendered after others) -->
 
