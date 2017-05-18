@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<component name="SettingTask" extends="Task">
+
+  <interface>
+    <field id="settingName" type="string" />
+    <field id="settingValue" type="string" />
+    <field id="readValue" type="string" />
+    <field id="writeSuccess" type="bool" />
+  </interface>
+
+  <script type = "text/brightscript" uri="pkg:/components/Tasks/SettingTask.brs" />
+
+</component>

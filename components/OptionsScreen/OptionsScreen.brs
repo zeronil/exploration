@@ -61,15 +61,12 @@ sub onItemFocused()
 end sub
 
 ' =============================================================================
-' onItemSelected - Button press handler
+' onInitialItemSelectedChanged
 ' =============================================================================
 
-sub onItemSelected()
+sub onInitialItemSelectedChanged()
 
-  print "OptionsScreen.brs - [onItemSelected]" m.top.itemSelected
-
-  if m.top.itemSelected = 0
-  end if
+  print "OptionsScreen.brs - [onInitialItemSelectedChanged]" m.top.initialItemSelected
 
 end sub
 

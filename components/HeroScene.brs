@@ -49,6 +49,10 @@ sub init()
 
   m.top.setFocus(true)
 
+  ' Get initial color for Overhang
+
+  readSetting("overhangBackgroundColorIndex")
+
 end sub
 
 ' =============================================================================
@@ -59,13 +63,72 @@ sub onOptionSelected()
 
   print "HeroScene.brs - [onOptionSelected]" m.OptionsScreen.itemSelected
 
+  overhangBackgroundColor = invalid
+
   if m.OptionsScreen.itemSelected = 0
-    m.OverhangBackground.color = "0xFF0000FF"
+    overhangBackgroundColor = "0xFF0000FF"
   else if m.OptionsScreen.itemSelected = 1
-    m.OverhangBackground.color = "0x551A8BFF"
+    overhangBackgroundColor = "0x551A8BFF"
+  end if
+
+  if (overhangBackgroundColor <> invalid)
+    m.OverhangBackground.color = overhangBackgroundColor
+    writeSetting("overhangBackgroundColorIndex",StrI(m.OptionsScreen.itemSelected))
   end if
 
   fadeOutOptionsScreen()
+
+end sub
+
+' =============================================================================
+' readSetting - Read a setting from the registry
+' =============================================================================
+
+function readSetting(settingName as String) As Dynamic
+
+    print "HeroScene.brs - [readSetting] " settingName
+
+    m.readSettingTask = createObject("roSGNode", "SettingTask")
+    m.readSettingTask.settingName = settingName
+    m.readSettingTask.observeField("readValue", "onReadSettingComplete")
+    m.readSettingTask.control = "RUN"
+
+end function
+
+' =============================================================================
+' onReadSettingComplete
+' =============================================================================
+
+sub onReadSettingComplete()
+
+  print "HeroScene.brs - [onReadSettingComplete] " m.readSettingTask.settingName " = " m.readSettingTask.readValue
+
+  if m.readSettingTask.settingName = "overhangBackgroundColorIndex"
+
+    if m.readSettingTask.readValue <> invalid
+      m.OptionsScreen.itemSelected = Val(m.readSettingTask.readValue, 10)
+      m.OptionsScreen.itemChecked = Val(m.readSettingTask.readValue, 10)
+    else
+      m.OptionsScreen.itemChecked = 0
+    end if
+
+  end if
+
+end sub
+
+' =============================================================================
+' writeSetting - Write a setting to the registry
+' =============================================================================
+
+sub writeSetting(settingName As String, settingValue as String)
+
+    print "HeroScene.brs - [writeSetting] " settingName " = " settingValue
+
+    m.writeSettingTask = createObject("roSGNode", "SettingTask")
+    m.writeSettingTask.settingName = settingName
+    m.writeSettingTask.settingValue = settingValue
+    ' m.writeSettingTask.observeField("writeSuccess", "onSettingOperationComplete")
+    m.writeSettingTask.control = "RUN"
 
 end sub
 

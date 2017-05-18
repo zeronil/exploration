@@ -4,9 +4,8 @@
 
   <interface>
 
-    <!-- Button selected handler -->
-
-    <field id="itemSelected" type="integer" alwaysnotify="true" alias="Buttons.itemSelected" onChange="onItemSelected" />
+    <field id="itemChecked" type="integer" alias="Buttons.checkedItem"  />
+    <field id="itemSelected" type="integer" alwaysnotify="true" alias="Buttons.itemSelected"  />
 
   </interface>
 
