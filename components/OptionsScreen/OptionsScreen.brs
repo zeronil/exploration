@@ -2,7 +2,7 @@
  ' init - Initializes the Options screen, sets all observers and configures buttons for Options screen
  ' =============================================================================
 
-function init()
+sub init()
 
   print "OptionsScreen.brs - [init]"
 
@@ -13,22 +13,23 @@ function init()
 
   ' Create buttons
 
-  result = []
+  m.buttonDefinitions = [
+    {title: "Red Banner", color: "0xFF0000"},
+    {title: "Purple Banner", color: "0x551A8B"},
+    {title: "Green Banner", color: "0x007700"}
+  ]
 
-  for each button in ["Red Banner", "Purple Banner"]
-    result.push({title : button})
-  end for
+  m.buttons.content = contentList2SimpleNode(m.buttonDefinitions)
 
   ' Initially selected button
 
   m.buttons.checkedItem = 0
+  m.buttons.focusedColor = m.buttonDefinitions[0].color
 
-  m.buttons.content = contentList2SimpleNode(result)
-
-end function
+end sub
 
 ' =============================================================================
-' onVisibleChange - When entering Options screen, set the focus to the first button
+' onVisibleChange - When entering Options screen, set the focus to the selected button
 ' =============================================================================
 
 sub onVisibleChange()
@@ -52,21 +53,21 @@ sub onItemFocused()
 
   print "OptionsScreen.brs - [onItemFocused]" m.buttons.itemFocused
 
-  if m.buttons.itemFocused = 0
-    m.buttons.focusedColor = "0xFF0000"
-  else if m.buttons.itemFocused = 1
-    m.buttons.focusedColor = "0x551A8B"
+  if m.buttons.itemFocused < m.buttonDefinitions.Count()
+    print "OptionsScreen.brs - [onItemFocused] color = " m.buttonDefinitions[m.buttons.itemFocused].color
+    m.buttons.focusedColor = m.buttonDefinitions[m.buttons.itemFocused].color
   end if
 
 end sub
 
 ' =============================================================================
-' onInitialItemSelectedChanged
+' onButtonSelectedChanged
 ' =============================================================================
 
-sub onInitialItemSelectedChanged()
+sub onButtonSelectedChanged()
 
-  print "OptionsScreen.brs - [onInitialItemSelectedChanged]" m.top.initialItemSelected
+  print "OptionsScreen.brs - [onButtonSelectedChanged]" m.top.itemSelected
+  m.top.selectedColor = m.buttonDefinitions[m.top.itemSelected].color
 
 end sub
 

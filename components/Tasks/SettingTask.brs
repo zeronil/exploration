@@ -22,6 +22,9 @@ sub executeOperation()
 
   if m.settingName <> invalid and Len(m.settingName) > 0 then
 
+    ' If settingName and settingValue are both specified then perform a write;
+    ' otherwise, perform a read .
+
     if m.settingValue <> invalid and Len(m.settingValue) > 0 then
       writeSetting()
     else
@@ -45,12 +48,12 @@ sub readSetting()
      registrySection = CreateObject("roRegistrySection", "Settings")
 
      if registrySection.Exists(m.settingName)
-         m.top.readValue = registrySection.Read(m.settingName)
+         m.top.settingValueRead = registrySection.Read(m.settingName)
      else
-         m.top.readValue = invalid
+         m.top.settingValueRead = invalid
      endif
 
-     print "SettingTask.brs - [readSetting] Complete ("; m.top.readValue; ")"
+     print "SettingTask.brs - [readSetting] Complete ("; m.top.settingValueRead; ")"
 
 end sub
 
@@ -63,9 +66,9 @@ sub writeSetting()
     print "SettingTask.brs - [writeSetting] " m.settingName " = " m.settingValue
 
     registrySection = CreateObject("roRegistrySection", "Settings")
-    m.top.writeSuccess = registrySection.Write(m.settingName, m.settingValue)
+    m.top.settingWriteSuccess = registrySection.Write(m.settingName, m.settingValue)
     registrySection.Flush()
 
-    print "SettingTask.brs - [writeSetting] Complete ("; m.top.result; ")"
+    print "SettingTask.brs - [writeSetting] Complete ("; m.top.settingWriteSuccess; ")"
 
 end sub

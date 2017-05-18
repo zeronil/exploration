@@ -5,8 +5,8 @@
   <interface>
     <field id="settingName" type="string" />
     <field id="settingValue" type="string" />
-    <field id="readValue" type="string" />
-    <field id="writeSuccess" type="bool" />
+    <field id="settingValueRead" type="string" />
+    <field id="settingWriteSuccess" type="bool" />
   </interface>
 
   <script type = "text/brightscript" uri="pkg:/components/Tasks/SettingTask.brs" />
