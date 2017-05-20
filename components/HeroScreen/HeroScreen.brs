@@ -26,21 +26,21 @@ sub init()
   URLs = [
     ' Uncomment this line to simulate a bad request and make the dialog box appear
     ' "bad request",
-    "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/1cfd09ab38e54f48be8498e0249f5c83/media.rss",
-    "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/5a438a6cfe68407684832d54c4b58cbb/media.rss",
-    "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/4cd8f3ec67c64c16b8f3bf87339503dd/media.rss",
-    "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/c7f9e852f45044ceb0ae0d7748d675a5/media.rss"
+    {uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/1cfd09ab38e54f48be8498e0249f5c83/media.rss", format: "row"},
+    {uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/5a438a6cfe68407684832d54c4b58cbb/media.rss", format: "row"},
+    {uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/4cd8f3ec67c64c16b8f3bf87339503dd/media.rss", format: "row"},
+    {uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/c7f9e852f45044ceb0ae0d7748d675a5/media.rss", format: "grid"}
   ]
 
   ' "Parser" parameter specifies that the component "Parser.brs" should be used to parse loaded content
 
   makeRequest(URLs, "Parser")
 
-  ' Observer for when the screen becomes visible (for instance, when returning from from Details Screen)
+  ' Observer for when the screen becomes visible (for instance, when returning from the DetailsScreen)
 
   m.top.observeField("visible", "onVisibleChange")
 
-  ' Set proper focus to RowList in case of return from Details Screen
+  ' Set focus to RowList if returning from DetailsScreen
 
   m.top.observeField("focusedChild", "onFocusedChildChange")
 
@@ -54,6 +54,8 @@ end sub
 
 sub makeRequest(URLs as object, ParserComponent as String)
 
+  m.UriHandler.numRows = URLs.count()
+
   ' Initiate a request for each "row" in the UI
 
   for i = 0 to URLs.count() - 1
@@ -61,9 +63,9 @@ sub makeRequest(URLs as object, ParserComponent as String)
     print "HeroScreen.brs - [makeRequest] num =" i
 
     context = createObject("roSGNode", "Node")
-    uri = { uri: URLs[i] }
+    uri = { uri: URLs[i].uri, format: URLs[i].format}
 
-    if type(uri) = "roAssociativeArray"
+    if type(uri) = "roAssociativeArray" then
 
       context.addFields({
         parameters: uri,
@@ -95,15 +97,6 @@ sub onContentLoaded()
 end sub
 
 ' =============================================================================
-' onVisibleChange - Sets proper focus to RowList in case channel returns from Details Screen
-' =============================================================================
-
-sub onVisibleChange()
-  print "HeroScreen.brs - [onVisibleChange]"
-  if m.top.visible then m.rowList.setFocus(true)
-end sub
-
-' =============================================================================
 ' onItemFocused - Handler for focused item in RowList
 ' =============================================================================
 
@@ -113,13 +106,18 @@ sub onItemFocused()
 
   itemFocused = m.top.itemFocused
 
-  ' When an item gains the key focus, set to a 2-element array,
+  ' When an item gains the focus, set to a 2-element array,
   ' where element 0 contains the index of the focused row,
-  ' and element 1 contains the index of the focused item in that row.
+  ' and element 1 contains the index of the focused item
+  ' in that row.
 
   if itemFocused.Count() = 2 then
 
     focusedContent = m.top.content.getChild(itemFocused[0]).getChild(itemFocused[1])
+
+    ' focusedContent is assigned to an interface field so that HeroScene can provide
+    ' content data to DetailsScreen when a RowList item is focused. Also, a fullscreen
+    ' (blurred) image for the selected item is assigned the the screen's background.
 
     if focusedContent <> invalid then
       m.top.focusedContent = focusedContent
@@ -131,7 +129,17 @@ sub onItemFocused()
 end sub
 
 ' =============================================================================
-' onFocusedChildChange - Set proper focus to RowList in case of return from Details Screen
+' onVisibleChange - Sets focus to RowList in case channel returns from DetailsScreen
+' =============================================================================
+
+sub onVisibleChange()
+  print "HeroScreen.brs - [onVisibleChange]"
+  if m.top.visible then m.rowList.setFocus(true)
+end sub
+
+' =============================================================================
+' onFocusedChildChange - Set focus to RowList in case of return from DetailsScreen
+'                        or the LoadingIndicator is removed, etc.
 ' =============================================================================
 
 sub onFocusedChildChange()

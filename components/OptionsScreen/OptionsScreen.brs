@@ -34,7 +34,7 @@ end sub
 
 sub onVisibleChange()
 
-  if m.top.visible
+  if m.top.visible then
 
     print "OptionsScreen.brs - [onVisibleChange] Visible - focus first button"
 
@@ -53,7 +53,7 @@ sub onItemFocused()
 
   print "OptionsScreen.brs - [onItemFocused]" m.buttons.itemFocused
 
-  if m.buttons.itemFocused < m.buttonDefinitions.Count()
+  if m.buttons.itemFocused < m.buttonDefinitions.Count() then
     print "OptionsScreen.brs - [onItemFocused] color = " m.buttonDefinitions[m.buttons.itemFocused].color
     m.buttons.focusedColor = m.buttonDefinitions[m.buttons.itemFocused].color
   end if
@@ -81,7 +81,7 @@ function contentList2SimpleNode(contentList as Object, nodeType = "ContentNode" 
 
   result = createObject("roSGNode", nodeType)
 
-  if result <> invalid
+  if result <> invalid then
 
     for each itemAA in contentList
       item = createObject("roSGNode", nodeType)

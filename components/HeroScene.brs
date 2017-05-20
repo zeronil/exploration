@@ -208,13 +208,13 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
     ' BACK KEY
     ' -------------
 
-    if key = "back"
+    if key = "back" then
 
       print "HeroScene.brs - [onKeyEvent] BACK key pressed"
 
       ' If WarningDialog is open then remove and make HeroScreen visible
 
-      if m.WarningDialog.visible = true
+      if m.WarningDialog.visible = true then
         print "HeroScene.brs - [onKeyEvent] Remove warning"
         m.WarningDialog.visible = "false"
         m.HeroScreen.setFocus(true)
@@ -222,21 +222,21 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
 
       ' If OptionsScreen is displayed, then make HeroScreen visible
 
-      else if m.OptionsScreen.visible = true
+      else if m.OptionsScreen.visible = true then
         print "HeroScene.brs - [onKeyEvent] Fade out options"
         fadeOutOptionsScreen()
         isKeyEventHandled = true
 
       ' If Details open and video player opened, then remove the video player
 
-      else if m.HeroScreen.visible = false and m.DetailsScreen.videoPlayerVisible = true
+      else if m.HeroScreen.visible = false and m.DetailsScreen.videoPlayerVisible = true then
         print "HeroScene.brs - [onKeyEvent] Remove video player"
         m.DetailsScreen.videoPlayerVisible = false
         isKeyEventHandled = true
 
       ' If Details opened then need to transition to HeroScreen
 
-      else if m.HeroScreen.visible = false and m.DetailsScreen.videoPlayerVisible = false
+      else if m.HeroScreen.visible = false and m.DetailsScreen.videoPlayerVisible = false then
         print "HeroScene.brs - [onKeyEvent] Fade out details"
         m.FadeOutDetails.control = "start"
         m.HeroScreen.visible = "true"
@@ -250,13 +250,13 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
     ' OK KEY
     ' -------------
 
-    else if key = "OK"
+    else if key = "OK" then
 
       print "HeroScene.brs - [onKeyEvent] OK key pressed"
 
       ' If WarningDialog is open then remove and make HeroScreen visible
 
-      if m.WarningDialog.visible = true
+      if m.WarningDialog.visible = true then
         m.WarningDialog.visible = "false"
         m.HeroScreen.setFocus(true)
       end if
@@ -265,18 +265,18 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
     ' OPTIONS KEY
     ' -------------
 
-    else if key = "options"
+    else if key = "options" then
 
       ' If WarningDialog is open then remove and make HeroScreen visible
 
-      if m.WarningDialog.visible = true
+      if m.WarningDialog.visible = true then
         print "HeroScene.brs - [onKeyEvent] OPTIONS key pressed - hide warning"
         m.WarningDialog.visible = "false"
         m.HeroScreen.setFocus(true)
 
       ' Else make the OptionsScreen visible
 
-      else if m.OptionsScreen.visible = false
+      else if m.OptionsScreen.visible = false then
         print "HeroScene.brs - [onKeyEvent] OPTIONS key pressed - Fade in options"
         m.FadeInOptions.control = "start"
         m.HeroScreen.visible = "false"

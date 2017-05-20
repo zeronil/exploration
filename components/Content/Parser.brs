@@ -17,59 +17,64 @@ sub parseResponse()
 
   print "Parser.brs - [parseResponse]"
 
-  str = m.top.response.content
+  contentString = m.top.response.content
   num = m.top.response.num
 
-  if str = invalid return
+  if contentString = invalid then return
 
   xml = CreateObject("roXMLElement")
 
   ' Return invalid if string can't be parsed
 
-  if not xml.Parse(str) return
+  if not xml.Parse(contentString) return
 
   if xml <> invalid then
-    xml = xml.getchildelements()
-    responsearray = xml.getchildelements()
+    channelRoot = xml.getChildElements()
+    channelElementsArray = channelRoot.getChildElements()
   end if
 
-  result = []
+  channelItemsArray = []
 
-  'responsearray - <channel>'
+  ' Process each channel element
+  ' <title>, <link>, <description>, <pubDate>, <image>, and lots of <item>'s
 
-  for each xmlitem in responsearray
+  for each channelElement in channelElementsArray
 
-    ' <title>, <link>, <description>, <pubDate>, <image>, and lots of <item>'s
+  ' Get all channel <item>s
 
-    if xmlitem.getname() = "item"
+    if channelElement.getName() = "item"
 
-      ' All things related to one item (title, link, description, media:content, etc.)
+      channelItemElements = channelElement.getChildElements()
 
-      itemaa = xmlitem.getchildelements()
+      if channelItemElements <> invalid then
 
-      if itemaa <> invalid
-
-        item = {}
+        channelItem = {}
 
         ' Get all <item> attributes
 
-        for each xmlitem in itemaa
+        for each channelItemElement in channelItemElements
 
-          item[xmlitem.getname()] = xmlitem.gettext()
+           ' Build the channelItem associative array using the tag name and text text
 
-          if xmlitem.getname() = "media:content"
+           channelItem[channelItemElement.getName()] = channelItemElement.gettext()
 
-            item.stream = {url : xmlitem.url}
-            item.url = xmlitem.getattributes().url
-            item.streamformat = "mp4"
+          if channelItemElement.getName() = "media:content" then
 
-            mediacontent = xmlitem.getchildelements()
+            channelItem.stream = {url : channelItemElement.url}
+            channelItem.url = channelItemElement.getAttributes().url
+            channelItem.streamformat = "mp4"
 
-            for each mediacontentitem in mediacontent
-              if mediacontentitem.getname() = "media:thumbnail"
-                item.hdposterurl = mediacontentitem.getattributes().url
-                item.hdbackgroundimageurl = mediacontentitem.getattributes().url
-                item.uri = mediacontentitem.getattributes().url
+            ' Get child elements of the <media:content> element
+
+            mediaContent = channelItemElement.getChildElements()
+
+          ' Add the channel item to the array of channel items
+
+            for each mediaContentItem in mediaContent
+              if mediaContentItem.getName() = "media:thumbnail" then
+                channelItem.hdposterurl = mediaContentItem.getAttributes().url
+                channelItem.hdbackgroundimageurl = mediaContentItem.getAttributes().url
+                channelItem.uri = mediaContentItem.getAttributes().url
               end if
             end for
 
@@ -77,7 +82,7 @@ sub parseResponse()
 
         end for
 
-        result.push(item)
+        channelItemsArray.push(channelItem)
 
       end if
 
@@ -85,35 +90,34 @@ sub parseResponse()
 
   end for
 
-  'For the 3 rows before the "grid"
+  ' For the 3 rows before the "grid"
 
   list = [
     {
         Title:"Big Hits"
-        ContentList : result
+        ContentList : channelItemsArray
     }
     {
         Title:"Action"
-        ContentList : result
+        ContentList : channelItemsArray
     }
     {
         Title:"Drama"
-        ContentList : result
+        ContentList : channelItemsArray
     }
   ]
 
   'Logic for creating a "row" vs. a "grid"
 
-  contentAA = {}
-  content = invalid
-
   if num = 3
-    content = createGrid(result)
+    content = createGrid(channelItemsArray)
   else
     content = createRow(list, num)
   end if
 
   'Add the newly parsed content row/grid to the cache until everything is ready
+
+  contentAA = {}
 
   if content <> invalid
     contentAA[num.toStr()] = content

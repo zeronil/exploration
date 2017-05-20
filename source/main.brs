@@ -38,18 +38,18 @@ sub Main(input as Dynamic)
 
   end if
 
-  showHeroScreen()
+  showHeroScene()
 
 end sub
 
 ' =============================================================================
-' showHeroScreen - Initializes the scene and shows the main homepage and
-'                  handles closing of the channel
+' showHeroScene - Creates the screen and initializes the scene, then shows the
+'                 main homepage. Also handles closing of the channel.
 ' =============================================================================
 
-sub showHeroScreen()
+sub showHeroScene()
 
-  print "main.brs - [showHeroScreen]"
+  print "main.brs - [showHeroScene]"
 
   ' The roSGScreen object is a Scene Graph canvas that displays the contents of a Scene Graph Scene node tree
 

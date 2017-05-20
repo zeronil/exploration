@@ -5,7 +5,8 @@
 ' =============================================================================
 
 sub init()
-  m.Poster = m.top.findNode("poster")
+  m.poster = m.top.findNode("poster")
+  m.posterBackground = m.top.findNode("posterBackground")
 end sub
 
 ' =============================================================================
@@ -14,16 +15,16 @@ end sub
 
 sub itemContentChanged()
 
-  m.Poster.loadDisplayMode = "scaleToZoom"
+  m.poster.loadDisplayMode = "scaleToFit"
 
   if m.top.height < 400 and m.top.width < 400
-    m.Poster.loadWidth = 300
-    m.Poster.loadHeight = 150
+    m.poster.loadWidth = 300
+    m.poster.loadHeight = 150
   end if
 
   updateLayout()
 
-  m.Poster.uri = m.top.itemContent.HDPOSTERURL
+  m.poster.uri = m.top.itemContent.HDPOSTERURL
 
 end sub
 
@@ -33,8 +34,17 @@ end sub
 ' =============================================================================
 
 sub updateLayout()
+
   if m.top.height > 0 And m.top.width > 0 then
-    m.Poster.width  = m.top.width
-    m.Poster.height = m.top.height
+
+    m.poster.width  = m.top.width
+    m.poster.height = m.top.height
+
+    ' print "CustomItem.brs - [updateLayout] " m.posterBackground
+
+    m.posterBackground.width  = m.top.width
+    m.posterBackground.height = m.top.height
+
   end if
+
 end sub

@@ -47,7 +47,7 @@ sub readSetting()
 
      registrySection = CreateObject("roRegistrySection", "Settings")
 
-     if registrySection.Exists(m.settingName)
+     if registrySection.Exists(m.settingName) then
          m.top.settingValueRead = registrySection.Read(m.settingName)
      else
          m.top.settingValueRead = invalid
