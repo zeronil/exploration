@@ -1,5 +1,3 @@
-' ********** Copyright 2016 Roku Corp.  All Rights Reserved. **********
-
 ' =============================================================================
 ' select - Helper function to select only a certain range of content
 ' =============================================================================
@@ -13,7 +11,7 @@ function select(array as object, first as integer, last as integer) as object
   for i = first to last
     result.push(array[i])
   end for
-  
+
   return result
 
 end function
@@ -22,25 +20,25 @@ end function
 ' addAndSetFields - Helper function to add and set fields of a content node
 ' =============================================================================
 
-function addAndSetFields(node as object, aa as object)
+function addAndSetFields(node as object, associativeArray as object)
 
   'This gets called for every content node -- commented out since it's pretty verbose
   'print "UriHandler.brs - [AddAndSetFields]"
 
-  addFields = {}
-  setFields = {}
+  fieldsToAdd = {}
+  fieldsToSet = {}
 
-  for each field in aa
+  for each field in associativeArray
 
     if node.hasField(field)
-      setFields[field] = aa[field]
+      fieldsToSet[field] = associativeArray[field]
     else
-      addFields[field] = aa[field]
+      fieldsToAdd[field] = associativeArray[field]
     end if
 
   end for
 
-  node.setFields(setFields)
-  node.addFields(addFields)
+  node.setFields(fieldsToSet)
+  node.addFields(fieldsToAdd)
 
 end function

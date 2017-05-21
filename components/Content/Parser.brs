@@ -1,5 +1,3 @@
-' ********** Copyright 2016 Roku Corp.  All Rights Reserved. **********
-
 ' =============================================================================
 ' init
 ' =============================================================================
@@ -15,10 +13,12 @@ end sub
 
 sub parseResponse()
 
-  print "Parser.brs - [parseResponse]"
-
   contentString = m.top.response.content
   num = m.top.response.num
+  format = m.top.response.format
+  title = m.top.response.title
+
+  print "Parser.brs - [parseResponse] Job" num ", format = " format "(" title ")"
 
   if contentString = invalid then return
 
@@ -90,66 +90,63 @@ sub parseResponse()
 
   end for
 
-  ' For the 3 rows before the "grid"
+  ' Logic for creating a "row" vs. a "grid"
 
-  list = [
-    {
-        Title:"Big Hits"
-        ContentList : channelItemsArray
-    }
-    {
-        Title:"Action"
-        ContentList : channelItemsArray
-    }
-    {
-        Title:"Drama"
-        ContentList : channelItemsArray
-    }
-  ]
-
-  'Logic for creating a "row" vs. a "grid"
-
-  if num = 3
-    content = createGrid(channelItemsArray)
+  if format = "row"
+    content = createRow(channelItemsArray, title)
   else
-    content = createRow(list, num)
+    content = createGrid(channelItemsArray, title)
   end if
 
-  'Add the newly parsed content row/grid to the cache until everything is ready
+  ' Add the newly parsed content row/grid to the cache until everything is ready
 
   contentAA = {}
 
   if content <> invalid
+
     contentAA[num.toStr()] = content
-    if m.UriHandler = invalid then m.UriHandler = m.top.getParent()
+
+    ' If the reference to the UriHandler that created the parser has not yet been assigned,
+    ' the assign the reference (the UriHandler will be the parent of Parser since UriHandler
+    ' created Parser and maintains a reference to Parser)
+
+    if m.UriHandler = invalid then m.UriHandler = m.top.getparentNode()
+
+    '
     m.UriHandler.contentCache.addFields(contentAA)
+
   else
-    print "Error: content was invalid"
+    print "Parser.brs - [parseResponse] Error: content was invalid"
   end if
 
 end sub
 
 ' =============================================================================
 ' createRow - Create a row of content
+'
+'             NOTE: SGHelperFunctions is included by Parser.xml and makes
+'                   available the addAndSetFields function.
+'
 ' =============================================================================
 
-function createRow(list as object, num as Integer)
+function createRow(list as object, title as string)
 
   print "Parser.brs - [createRow]"
 
-  Parent = createObject("RoSGNode", "ContentNode")
-  row = createObject("RoSGNode", "ContentNode")
-  row.Title = list[num].Title
+  parentNode = createObject("RoSGNode", "ContentNode")
 
-  for each itemAA in list[num].ContentList
+  row = createObject("RoSGNode", "ContentNode")
+  row.Title = title
+
+  for each itemAA in list
     item = createObject("RoSGNode","ContentNode")
-    AddAndSetFields(item, itemAA)
+    addAndSetFields(item, itemAA)
     row.appendChild(item)
   end for
 
-  Parent.appendChild(row)
+  parentNode.appendChild(row)
 
-  return Parent
+  return parentNode
 
 end function
 
@@ -157,34 +154,40 @@ end function
 ' createGrid - Create a grid of content - simple splitting of a feed to different rows
 '              with the title of the row hidden. Set the for loop parameters to adjust
 '              how many columns there should be in the grid.
+'
+'              NOTE: SGHelperFunctions is included by Parser.xml and makes
+'                    available the addAndSetFields function.
+'
 ' =============================================================================
 
-function createGrid(list as object)
+function createGrid(list as object, title as string)
 
   print "Parser.brs - [createGrid]"
 
-  Parent = createObject("RoSGNode","ContentNode")
+  parentNode = createObject("RoSGNode","ContentNode")
 
   for i = 0 to list.count() step 4
 
     row = createObject("RoSGNode","ContentNode")
 
     if i = 0
-      row.Title = "The Grid"
+      row.Title = title
     end if
 
     for j = i to i + 3
+
       if list[j] <> invalid
         item = createObject("RoSGNode","ContentNode")
-        AddAndSetFields(item,list[j])
+        addAndSetFields(item,list[j])
         row.appendChild(item)
       end if
+      
     end for
 
-    Parent.appendChild(row)
+    parentNode.appendChild(row)
 
   end for
 
-  return Parent
+  return parentNode
 
 end function
