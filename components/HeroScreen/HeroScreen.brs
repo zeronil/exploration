@@ -26,10 +26,26 @@ sub init()
   requests = [
     ' Uncomment this line to simulate a bad request and make the dialog box appear
     ' "bad request",
-    {uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/1cfd09ab38e54f48be8498e0249f5c83/media.rss", title: "Super Big Hits", format: "row"},
-    {uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/5a438a6cfe68407684832d54c4b58cbb/media.rss", title: "Super Action", format: "row"},
-    {uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/4cd8f3ec67c64c16b8f3bf87339503dd/media.rss", title: "Super Drama", format: "row"},
-    {uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/c7f9e852f45044ceb0ae0d7748d675a5/media.rss", title: "Super Grid", format: "grid"}
+    {
+      uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/1cfd09ab38e54f48be8498e0249f5c83/media.rss",
+      title: "Super Big Hits",
+      format: "row"
+    },
+    {
+      uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/5a438a6cfe68407684832d54c4b58cbb/media.rss",
+      title: "Super Action",
+      format: "row"
+    },
+    {
+      uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/4cd8f3ec67c64c16b8f3bf87339503dd/media.rss",
+      title: "Super Drama",
+      format: "row"
+    },
+    {
+      uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/c7f9e852f45044ceb0ae0d7748d675a5/media.rss",
+      title: "Super Grid",
+      format: "grid"
+    }
   ]
 
   ' "Parser" parameter specifies that the component "Parser.brs" should be used to parse loaded content
@@ -54,7 +70,7 @@ end sub
 
 sub makeRequest(requests as object, ParserComponent as String)
 
-  m.UriHandler.numRows = requests.count()
+  m.UriHandler.numRequests = requests.count()
 
   ' Initiate a request for each "row" in the UI
 

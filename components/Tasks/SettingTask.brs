@@ -15,7 +15,7 @@ end sub
 
 sub executeOperation()
 
-  print "SettingTask.brs - [executeOperation] settingName = " m.top.settingName ", settingValue = " m.top.settingValue
+  print "SettingTask.brs - [executeOperation] settingName = " m.top.settingName ", settingValue = " m.top.settingValue.trim()
 
   m.settingName = m.top.settingName
   m.settingValue = m.top.settingValue
@@ -53,7 +53,7 @@ sub readSetting()
          m.top.settingValueRead = invalid
      endif
 
-     print "SettingTask.brs - [readSetting] Complete ("; m.top.settingValueRead; ")"
+     print "SettingTask.brs - [readSetting] Complete (" m.settingName " = " m.top.settingValueRead.trim() ")"
 
 end sub
 
@@ -63,12 +63,12 @@ end sub
 
 sub writeSetting()
 
-    print "SettingTask.brs - [writeSetting] " m.settingName " = " m.settingValue
+    print "SettingTask.brs - [writeSetting] " m.settingName " = " m.settingValue.trim()
 
     registrySection = CreateObject("roRegistrySection", "Settings")
     m.top.settingWriteSuccess = registrySection.Write(m.settingName, m.settingValue)
     registrySection.Flush()
 
-    print "SettingTask.brs - [writeSetting] Complete ("; m.top.settingWriteSuccess; ")"
+    print "SettingTask.brs - [writeSetting] Complete (success = " m.top.settingWriteSuccess ")"
 
 end sub

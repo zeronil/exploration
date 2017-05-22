@@ -40,22 +40,35 @@
       color="0x000000"
       ShadeOpacity="0.8" />
 
-    <!-- The main content -->
+    <!-- The main content
+
+         itemComponentName - The name of an XML component for the items in each row.
+         numRows - The number of visible rows in the list (total rows may more or less depending upon content).
+         focusXOffset - The x-offset of the first fully visible item in each row relative to the left edge of the list.
+         itemSize - The row width (of the entire row) and row height of rows in the list.
+         rowHeights - The heights of each row of the list. The values override the height specified in the itemSize field.
+         rowItemSize - The width and height of the items in each row. The last value in the array is used as the size for any extra rows.
+         rowItemSpacing - The spacing between items in each row. The last value in the array is used as the spacing for any extra rows.
+         showRowLabel - Specifies whether the row label on the left edge of each row is displayed. The last value in the array is used for any extra rows.
+         rowLabelOffset -  The  horizontal offset of the label from the left edge of the row. The last value in the array is used for any extra rows.
+         showRowCounter - Specifies whether the "X of Y" label on the right edge of each row is displayed (only visible for focused row).
+         rowFocusAnimationStyle - Specifies the how the focus indicator moves in a row of items in response to Left/Right key presses.
+    -->
 
     <RowList
 	    id="RowList"
+      translation="[0, 180]"
       itemComponentName="CustomItem"
-      focusXOffset="[165]"
-      itemSize="[1920,220]"
       numRows="9"
-      rowFocusAnimationStyle="FixedFocusWrap"
-      rowHeights="[800,300,615]"
-      rowItemSize="[[1600,700],[375,197],[375,526],[375,197]]"
-      rowItemSpacing="[[50,0]]"
-      rowLabelOffset="[[165,8]]"
-      showRowLabel="[false,true]"
-      showRowCounter="[true,true,true,false]"
-      translation="[0,180]"/>
+      focusXOffset="[165]"
+      itemSize="[1920, 220]"
+      rowHeights="[800, 300, 490]"
+      rowItemSize="[[1600, 700], [375, 200], [375, 400], [375, 200]]"
+      rowItemSpacing="[[50, 0]]"
+      showRowLabel="[false, true]"
+      rowLabelOffset="[[165, 8]]"
+      showRowCounter="[true, true, true, false]"
+      rowFocusAnimationStyle="FixedFocusWrap" />
 
     <!-- For transition animation -->
 

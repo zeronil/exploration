@@ -15,7 +15,7 @@ end sub
 
 sub itemContentChanged()
 
-  m.poster.loadDisplayMode = "scaleToFit"
+  m.poster.loadDisplayMode = "scaleToFill"
 
   if m.top.height < 400 and m.top.width < 400
     m.poster.loadWidth = 300

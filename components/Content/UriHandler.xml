@@ -6,18 +6,18 @@
 
   <interface>
 
+    <!-- Field to issue a request to the handler -->
+
+    <field id="request" type="assocarray"/>
+
     <!-- Field to define the total number of requests expected
          (this chould be set before the first request is made) -->
 
-  	<field id="numRows" type="integer" value="1" />
+  	<field id="numRequests" type="integer" value="1" />
 
-    <!-- Field to issue a request to the handler -->
+    <!-- # of requests that have been completed -->
 
-  	<field id="request" type="assocarray"/>
-
-    <!-- # of rows of content received -->
-
-    <field id="numRowsReceived" type="integer"/>
+    <field id="numRequestsCompleted" type="integer"/>
 
     <!-- # of requests that have bad/no content -->
 

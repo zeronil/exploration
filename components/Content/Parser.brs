@@ -18,7 +18,7 @@ sub parseResponse()
   format = m.top.response.format
   title = m.top.response.title
 
-  print "Parser.brs - [parseResponse] Job" num ", format = " format "(" title ")"
+  print "Parser.brs - [parseResponse] Job" num ", format = " format " (" title ")"
 
   if contentString = invalid then return
 
@@ -71,11 +71,13 @@ sub parseResponse()
           ' Add the channel item to the array of channel items
 
             for each mediaContentItem in mediaContent
+
               if mediaContentItem.getName() = "media:thumbnail" then
                 channelItem.hdposterurl = mediaContentItem.getAttributes().url
                 channelItem.hdbackgroundimageurl = mediaContentItem.getAttributes().url
                 channelItem.uri = mediaContentItem.getAttributes().url
               end if
+
             end for
 
           end if
@@ -93,27 +95,31 @@ sub parseResponse()
   ' Logic for creating a "row" vs. a "grid"
 
   if format = "row"
-    content = createRow(channelItemsArray, title)
+    rowListContent = createRow(channelItemsArray, title)
   else
-    content = createGrid(channelItemsArray, title)
+    rowListContent = createGrid(channelItemsArray, title)
   end if
 
-  ' Add the newly parsed content row/grid to the cache until everything is ready
+  ' If content nodes were created
 
-  contentAA = {}
-
-  if content <> invalid
-
-    contentAA[num.toStr()] = content
+  if rowListContent <> invalid
 
     ' If the reference to the UriHandler that created the parser has not yet been assigned,
     ' the assign the reference (the UriHandler will be the parent of Parser since UriHandler
     ' created Parser and maintains a reference to Parser)
 
-    if m.UriHandler = invalid then m.UriHandler = m.top.getparentNode()
+    if m.UriHandler = invalid then m.UriHandler = m.top.getParent()
 
-    '
-    m.UriHandler.contentCache.addFields(contentAA)
+    ' Add the row/grid created for the job to the cache while waiting for
+    ' all requests to be processed. When contentCache changes, the event loop
+    ' in UriHandler will call the UriHandler's updateContent function.
+
+    content = {}
+    content[num.toStr()] = rowListContent
+
+    m.UriHandler.contentCache.addFields(content)
+
+  ' Else no content for the request
 
   else
     print "Parser.brs - [parseResponse] Error: content was invalid"
@@ -129,24 +135,35 @@ end sub
 '
 ' =============================================================================
 
-function createRow(list as object, title as string)
+function createRow(channelItemsArray as object, title as string)
 
-  print "Parser.brs - [createRow]"
+  print "Parser.brs - [createRow] title = " title
 
-  parentNode = createObject("RoSGNode", "ContentNode")
+  ' A RowList node should have a single ContentNode node as the root node in its content field.
+  ' One child ContentNode node should be added to the root node for each row in the list (these nodes
+  ' can be thought of as row nodes). Each row node should contain one child ContentNode node for each
+  ' item in the row (these nodes can be thought of as item nodes).
+
+  rowParentNode = createObject("RoSGNode", "ContentNode")
+
+  ' Row
 
   row = createObject("RoSGNode", "ContentNode")
-  row.Title = title
+  row.title = title
 
-  for each itemAA in list
-    item = createObject("RoSGNode","ContentNode")
-    addAndSetFields(item, itemAA)
-    row.appendChild(item)
+  ' Row items
+
+  for each item in channelItemsArray
+    rowItem = createObject("RoSGNode", "ContentNode")
+    addAndSetFields(rowItem, item)
+    row.appendChild(rowItem)
   end for
 
-  parentNode.appendChild(row)
+  ' Just one row being added to the RowList
 
-  return parentNode
+  rowParentNode.appendChild(row)
+
+  return rowParentNode
 
 end function
 
@@ -160,34 +177,49 @@ end function
 '
 ' =============================================================================
 
-function createGrid(list as object, title as string)
+function createGrid(channelItemsArray as object, title as string)
 
   print "Parser.brs - [createGrid]"
 
-  parentNode = createObject("RoSGNode","ContentNode")
+  ' A RowList node should have a single ContentNode node as the root node in its content field.
+  ' One child ContentNode node should be added to the root node for each row in the list (these nodes
+  ' can be thought of as row nodes). Each row node should contain one child ContentNode node for each
+  ' item in the row (these nodes can be thought of as item nodes).
 
-  for i = 0 to list.count() step 4
+  rowParentNode = createObject("RoSGNode", "ContentNode")
 
-    row = createObject("RoSGNode","ContentNode")
+  ' Create rows with 4 items per row
 
-    if i = 0
-      row.Title = title
+  for firstItemInRow = 0 to channelItemsArray.count() step 4
+
+    ' Create the row node
+
+    row = createObject("RoSGNode", "ContentNode")
+
+    ' Set a title for the first row only
+
+    if firstItemInRow = 0 then
+      row.title = title
     end if
 
-    for j = i to i + 3
+    ' Add the row items to the row
 
-      if list[j] <> invalid
-        item = createObject("RoSGNode","ContentNode")
-        addAndSetFields(item,list[j])
-        row.appendChild(item)
+    for item = firstItemInRow to firstItemInRow + 3
+
+      if channelItemsArray[item] <> invalid then
+        rowItem = createObject("RoSGNode", "ContentNode")
+        addAndSetFields(rowItem, channelItemsArray[item])
+        row.appendChild(rowItem)
       end if
-      
+
     end for
 
-    parentNode.appendChild(row)
+    ' Add the row to the parent node
+
+    rowParentNode.appendChild(row)
 
   end for
 
-  return parentNode
+  return rowParentNode
 
 end function

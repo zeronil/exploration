@@ -20,7 +20,7 @@ sub init()
   ' Fields for checking if content has been loaded.
   ' Each row is assumed to be a different request for a rss feed
 
-  m.top.numRowsReceived = 0
+  m.top.numRequestsCompleted = 0
   m.top.numBadRequests = 0
   m.top.contentSet = false
 
@@ -148,7 +148,7 @@ function addRequest(request as Object) as Boolean
     parser = request.parser
     requestNumber = context.num + 1
 
-    print "UriHandler.brs - [addRequest] Request number" requestNumber " of" m.top.numRows
+    print "UriHandler.brs - [addRequest] Request number" requestNumber " of" m.top.numRequests
 
     ' Create a Parser node if one has not previously been created
 
@@ -319,7 +319,7 @@ sub processResponse(message as Object)
 
       print "UriHandler.brs - [processResponse] Error: status code was: " + (message.GetResponseCode()).toStr()
       m.top.numBadRequests++
-      m.top.numRowsReceived++
+      m.top.numRequestsCompleted++
 
     end if
 
@@ -333,39 +333,53 @@ end sub
 
 ' =============================================================================
 ' updateContent - Callback function for when content has finished parsing. This is
-'                 executed by the event loop when the Parser assings the parsed
-'                 content to the "contentCache" interface field.
+'                 executed by the event loop when the Parser assigns generated
+'                 row data to the "contentCache" interface field.
 ' =============================================================================
 
 sub updateContent()
 
   print "UriHandler.brs - [updateContent]"
 
-  ' Received another row of content
+  ' Parser has added a row of content to contentCache after parsing
+  ' the content returned from a request.
 
-  m.top.numRowsReceived++
+  m.top.numRequestsCompleted++
 
-  ' Return if the content is already set (data for
-  ' all requests has been received)
+  ' Return if the content has already been set (data for
+  ' all requests has been received). The "contentSet" flag
+  ' is set below when numRequestsCompleted equals numRequests.
 
   if m.top.contentSet then return
 
-  ' Set the UI if all content from all streams are ready
+  ' Set the UI if all content from all requests are ready.
   ' Note: This technique is hindered by slowest request
   ' Need to think of a better asynchronous method here!
 
-  if m.top.numRows = m.top.numRowsReceived then
+  if m.top.numRequestsCompleted = m.top.numRequests then
 
-    parent = createObject("roSGNode", "ContentNode")
+    ' A RowList node should have a single ContentNode node as the root node in its content field.
+    ' One child ContentNode node should be added to the root node for each row in the list.
 
-    for i = 0 to (m.top.numRowsReceived - 1)
+    rowListContentParent = createObject("roSGNode", "ContentNode")
 
-      oldParent = m.top.contentCache.getField(i.toStr())
+    ' Loop through all of the cached data for completed requests
 
-      if oldParent <> invalid then
-        for j = 0 to (oldParent.getChildCount() - 1)
-          oldParent.getChild(0).reparent(parent,true)
+    for requestNumber = 0 to (m.top.numRequestsCompleted - 1)
+
+      cachedRequestParent = m.top.contentCache.getField(requestNumber.toStr())
+
+      if cachedRequestParent <> invalid then
+
+        ' Loop through all of the rows parented to cachedRequestParent and reparent
+        ' each row to rowListContentParent. Note that the getChild index is always
+        ' zero because when the child is reparented it is removed from cachedRequestParent,
+        ' so the next row becomes the row referenced by inde zero.
+
+        for rowNumber = 0 to (cachedRequestParent.getChildCount() - 1)
+          cachedRequestParent.getChild(0).reparent(rowListContentParent, true)
         end for
+
       end if
 
     end for
@@ -373,7 +387,13 @@ sub updateContent()
     print "UriHandler.brs - [updateContent] All content has finished loading"
 
     m.top.contentSet = true
-    m.top.responseContent = parent
+
+    ' The content for all of the requests has now been merged/parented to
+    ' rowListContentParent, so assign rowListContentParent to responseContent,
+    ' which will cause onContentLoaded to be called in HeroScreen (this function
+    ' will assign rowListContentParent as the content node for the RowList).
+
+    m.top.responseContent = rowListContentParent
 
   else
 
