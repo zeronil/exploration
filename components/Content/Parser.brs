@@ -13,20 +13,19 @@ end sub
 
 sub parseResponse()
 
-  contentString = m.top.response.content
   num = m.top.response.num
-  format = m.top.response.format
-  title = m.top.response.title
+  contentData = m.top.response.content
+  parameters = m.top.response.parameters
 
-  print "Parser.brs - [parseResponse] Job" num ", format = " format " (" title ")"
+  print "Parser.brs - [parseResponse] Job" num ", format = " parameters.format " (" parameters.title ")"
 
-  if contentString = invalid then return
+  if contentData = invalid then return
 
   xml = CreateObject("roXMLElement")
 
-  ' Return invalid if string can't be parsed
+  ' Return invalid if contentData can't be parsed
 
-  if not xml.Parse(contentString) return
+  if not xml.Parse(contentData) return
 
   if xml <> invalid then
     channelRoot = xml.getChildElements()
@@ -94,10 +93,10 @@ sub parseResponse()
 
   ' Logic for creating a "row" vs. a "grid"
 
-  if format = "row"
-    rowListContent = createRow(channelItemsArray, title)
+  if parameters.format = "row"
+    rowListContent = createRow(channelItemsArray, parameters.title)
   else
-    rowListContent = createGrid(channelItemsArray, title)
+    rowListContent = createGrid(channelItemsArray, parameters.title)
   end if
 
   ' If content nodes were created
@@ -110,12 +109,14 @@ sub parseResponse()
 
     if m.UriHandler = invalid then m.UriHandler = m.top.getParent()
 
-    ' Add the row/grid created for the job to the cache while waiting for
+    ' Add the row/gridrows created for the job to the cache while waiting for
     ' all requests to be processed. When contentCache changes, the event loop
-    ' in UriHandler will call the UriHandler's updateContent function.
+    ' in UriHandler will call the UriHandler's updateContent function. Note that
+    ' the parameters associated with the original request are icluded as well as
+    ' these parameters contain row metadata (rowHeight, etc).
 
     content = {}
-    content[num.toStr()] = rowListContent
+    content[num.toStr()] = {rows: rowListContent, parameters: parameters}
 
     m.UriHandler.contentCache.addFields(content)
 

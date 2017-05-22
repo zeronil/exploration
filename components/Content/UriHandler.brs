@@ -24,7 +24,7 @@ sub init()
   m.top.numBadRequests = 0
   m.top.contentSet = false
 
-  ' Stores the content if not all requests are ready
+  ' Accumulates the content as requests are completed
 
   m.top.contentCache = createObject("roSGNode", "ContentNode")
 
@@ -198,9 +198,9 @@ function addRequest(request as Object) as Boolean
           urlXfer.setPort(m.port)
 
           ' Get a unique number for the urlXfer object that can be used to identify whether events originated from this object
-          ' (note that the integer is converted to a string for the idKey).
+          ' (note that the integer is converted to a string for the roUrlTransferIdKey).
 
-          idKey = stri(urlXfer.getIdentity()).trim()
+          roUrlTransferIdKey = stri(urlXfer.getIdentity()).trim()
 
           ' Start a GET request to a server, but do not wait for the transfer to complete.
           ' When the GET completes, a roUrlEvent will be sent to the message port and processed by the event loop in the "go" function above.
@@ -213,7 +213,7 @@ function addRequest(request as Object) as Boolean
           ' The data consists of the original request object ("context") and the request's roUrlTransfer object ("xfer").
 
           if ok then
-            m.jobsById[idKey] = {context: request, xfer: urlXfer}
+            m.jobsById[roUrlTransferIdKey] = {context: request, xfer: urlXfer}
           else
             print "UriHandler.brs - [addRequest] Error: request couldn't be issued"
           end if
@@ -263,11 +263,11 @@ sub processResponse(message as Object)
 
   ' Get the unique id of the roUrlTransfer that sent the event
 
-  idKey = stri(message.GetSourceIdentity()).trim()
+  roUrlTransferIdKey = stri(message.GetSourceIdentity()).trim()
 
-  ' Find the transfer job associated with the idKey
+  ' Find the transfer job associated with the roUrlTransferIdKey
 
-  job = m.jobsById[idKey]
+  job = m.jobsById[roUrlTransferIdKey]
 
   ' If the transfer job was found
 
@@ -277,18 +277,17 @@ sub processResponse(message as Object)
 
     originalRequestFields = job.context.context
 
-    parameters = originalRequestFields.parameters
     jobNumber = originalRequestFields.num
+    parameters = originalRequestFields.parameters
 
-    print "UriHandler.brs - [processResponse] Response for job number"; jobNumber; " with transfer id = '"; idkey; "'"
+    print "UriHandler.brs - [processResponse] Response for job number"; jobNumber; " with transfer id = '"; roUrlTransferIdKey; "'"
 
     result = {
+      num: jobNumber,
       code: message.GetResponseCode(),
       headers: message.GetResponseHeaders(),
       content: message.GetString(),
-      format: parameters.format,
-      title: parameters.title,
-      num: jobNumber
+      parameters: parameters
     }
 
     ' ---------------------------------
@@ -297,7 +296,7 @@ sub processResponse(message as Object)
 
     ' The transfer job has completed, so remove the job from the associative array
 
-    m.jobsById.delete(idKey)
+    m.jobsById.delete(roUrlTransferIdKey)
 
     ' Assign the transfer result data to the original request
 
@@ -363,21 +362,54 @@ sub updateContent()
 
     rowListContentParent = createObject("roSGNode", "ContentNode")
 
+    ' Metadata about the rows for each request (part of the original request -- see the init
+    ' function of HeroScreen)
+
+    showRowLabel = []
+    showRowCounter = []
+    rowHeights = []
+    rowItemSize = []
+
     ' Loop through all of the cached data for completed requests
 
     for requestNumber = 0 to (m.top.numRequestsCompleted - 1)
 
-      cachedRequestParent = m.top.contentCache.getField(requestNumber.toStr())
+      cachedData = m.top.contentCache.getField(requestNumber.toStr())
 
-      if cachedRequestParent <> invalid then
+      ' This is the row (or rows) created by the parser. The row (or rows) are parented
+      ' to a ContentNode (cachedParentNode). The rows will be re-parented below when all of the requests
+      ' are processed.
 
-        ' Loop through all of the rows parented to cachedRequestParent and reparent
+      cachedParentNode = cachedData.rows
+
+      ' cachedParameters is a reference to the original parameters that were associated
+      ' with each content request. The parameter contain metadata about the row (rowHeight, etc.)
+
+      cachedParameters = cachedData.parameters
+
+      ' If one or more valid rows was created for the request
+
+      if cachedParentNode <> invalid then
+
+        ' Loop through all of the rows parented to cachedParentNode and reparent
         ' each row to rowListContentParent. Note that the getChild index is always
-        ' zero because when the child is reparented it is removed from cachedRequestParent,
+        ' zero because when the child is reparented it is removed from cachedParentNode,
         ' so the next row becomes the row referenced by inde zero.
 
-        for rowNumber = 0 to (cachedRequestParent.getChildCount() - 1)
-          cachedRequestParent.getChild(0).reparent(rowListContentParent, true)
+        for rowNumber = 0 to (cachedParentNode.getChildCount() - 1)
+
+          ' Re-parent the row(s) to rowListContentParent
+
+          cachedParentNode.getChild(0).reparent(rowListContentParent, true)
+
+          ' There should probably be a default value pushed into each array when the
+          ' value for a cached parameter is invalid
+
+          if cachedParameters.showRowLabel <> invalid then showRowLabel.push(cachedParameters.showRowLabel)
+          if cachedParameters.showRowCounter <> invalid then showRowCounter.push(cachedParameters.showRowCounter)
+          if cachedParameters.rowHeight <> invalid then rowHeights.push(cachedParameters.rowHeight)
+          if cachedParameters.rowItemSize <> invalid then rowItemSize.push(cachedParameters.rowItemSize)
+
         end for
 
       end if
@@ -388,12 +420,23 @@ sub updateContent()
 
     m.top.contentSet = true
 
+    ' Include the row metadata included with the request with the parsed data from the
+    ' response. HeroScreen will set up the RowList using this data when the HeroScreen
+    ' function onContentLoaded is executed.
+
+    metadata = {
+      showRowLabel: showRowLabel,
+      showRowCounter: showRowCounter,
+      rowHeights: rowHeights,
+      rowItemSize: rowItemSize
+    }
+
     ' The content for all of the requests has now been merged/parented to
     ' rowListContentParent, so assign rowListContentParent to responseContent,
     ' which will cause onContentLoaded to be called in HeroScreen (this function
     ' will assign rowListContentParent as the content node for the RowList).
 
-    m.top.responseContent = rowListContentParent
+    m.top.responseContent = {data: rowListContentParent, metadata: metadata}
 
   else
 

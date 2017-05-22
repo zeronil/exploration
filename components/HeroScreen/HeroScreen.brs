@@ -22,29 +22,51 @@ sub init()
   m.UriHandler.observeField("responseContent", "onContentLoaded")
 
   ' Make a request for each "row" in the UI (in the order that you want content filled)
+  '
+  '   showRowLabel - Specifies whether the row label on the left edge of each row is displayed.
+  '   showRowCounter - Specifies whether the "X of Y" label on the right edge of each row is displayed (only visible for focused row).
+  '   rowHeight - The height of the row of the list. The value overrides the height specified in the RowList itemSize field.
+  '   rowItemSize - The width and height of the items in the row.
+
 
   requests = [
     ' Uncomment this line to simulate a bad request and make the dialog box appear
     ' "bad request",
     {
       uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/1cfd09ab38e54f48be8498e0249f5c83/media.rss",
+      format: "row",
       title: "Super Big Hits",
-      format: "row"
+      showRowLabel: false,
+      showRowCounter: true,
+      rowHeight: 800,
+      rowItemSize: [1600, 700]
     },
     {
       uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/5a438a6cfe68407684832d54c4b58cbb/media.rss",
+      format: "row",
       title: "Super Action",
-      format: "row"
+      showRowLabel: true,
+      showRowCounter: true,
+      rowHeight: 300,
+      rowItemSize: [375, 200]
     },
     {
       uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/4cd8f3ec67c64c16b8f3bf87339503dd/media.rss",
+      format: "row",
       title: "Super Drama",
-      format: "row"
+      showRowLabel: true,
+      showRowCounter: true,
+      rowHeight: 500,
+      rowItemSize: [375, 400]
     },
     {
       uri: "http://api.delvenetworks.com/rest/organizations/59021fabe3b645968e382ac726cd6c7b/channels/c7f9e852f45044ceb0ae0d7748d675a5/media.rss",
+      format: "grid",
       title: "Super Grid",
-      format: "grid"
+      showRowLabel: true,
+      showRowCounter: false,
+      rowHeight: 220,
+      rowItemSize: [375, 200]
     }
   ]
 
@@ -79,12 +101,12 @@ sub makeRequest(requests as object, ParserComponent as String)
     print "HeroScreen.brs - [makeRequest] num =" i
 
     context = createObject("roSGNode", "Node")
-    request = requests[i]
+    parameters = requests[i]
 
-    if type(request) = "roAssociativeArray" then
+    if type(parameters) = "roAssociativeArray" then
 
       context.addFields({
-        parameters: { uri: request.uri, format: request.format, title: request.title},
+        parameters: parameters,
         num: i,
         response: {}
       })
@@ -107,9 +129,22 @@ end sub
 ' =============================================================================
 
 sub onContentLoaded()
+
   print "HeroScreen.brs - [onContentLoaded] UriHandler loaded content"
+
   m.top.numBadRequests = m.UriHandler.numBadRequests
-  m.top.content = m.UriHandler.responseContent
+
+  ' The metadata values are defined in the data for each request (see the init function above)
+  ' and is propagated through to the UriHandler, which will attached the metadata to the
+  ' response for each request that was fulfilled.
+
+  m.top.contentShowRowLabel = m.UriHandler.responseContent.metadata.showRowLabel
+  m.top.contentShowRowCounter = m.UriHandler.responseContent.metadata.showRowCounter
+  m.top.contentRowHeights = m.UriHandler.responseContent.metadata.rowHeights
+  m.top.contentRowItemSize = m.UriHandler.responseContent.metadata.rowItemSize
+
+  m.top.content = m.UriHandler.responseContent.data
+
 end sub
 
 ' =============================================================================
