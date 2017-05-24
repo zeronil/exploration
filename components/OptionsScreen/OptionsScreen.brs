@@ -66,8 +66,15 @@ end sub
 
 sub onButtonSelectedChanged()
 
-  print "OptionsScreen.brs - [onButtonSelectedChanged]" m.top.itemSelected
   m.top.selectedColor = m.buttonDefinitions[m.top.itemSelected].color
+
+  if not m.global.hasField("keyColor")
+    m.global.addFields( {keyColor: m.top.selectedColor} )
+  else
+    m.global.keyColor = m.top.selectedColor
+  end if
+
+  print "OptionsScreen.brs - [onButtonSelectedChanged]" m.top.itemSelected " (keyColor = " m.global.keyColor " " m.top.selectedColor ")"
 
 end sub
 

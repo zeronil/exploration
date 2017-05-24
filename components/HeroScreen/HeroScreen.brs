@@ -10,7 +10,7 @@ sub init()
 
   ' Get references to child nodes
 
-  m.Background = m.top.findNode("Background")
+  m.FadingBackground = m.top.findNode("FadingBackground")
   m.RowList = m.top.findNode("RowList")
 
   ' Create a task node to fetch the UI content and populate the screen
@@ -155,16 +155,16 @@ sub onItemFocused()
 
   print "HeroScreen.brs - [onItemFocused]"
 
-  itemFocused = m.top.itemFocused
+  itemFocusedIndexes = m.top.itemFocused
 
   ' When an item gains the focus, set to a 2-element array,
   ' where element 0 contains the index of the focused row,
   ' and element 1 contains the index of the focused item
   ' in that row.
 
-  if itemFocused.Count() = 2 then
+  if itemFocusedIndexes.Count() = 2 then
 
-    focusedContent = m.top.content.getChild(itemFocused[0]).getChild(itemFocused[1])
+    focusedContent = m.top.content.getChild(itemFocusedIndexes[0]).getChild(itemFocusedIndexes[1])
 
     ' focusedContent is assigned to an interface field so that HeroScene can provide
     ' content data to DetailsScreen when a RowList item is focused. Also, a fullscreen
@@ -172,7 +172,7 @@ sub onItemFocused()
 
     if focusedContent <> invalid then
       m.top.focusedContent = focusedContent
-      m.Background.uri = focusedContent.hdBackgroundImageUrl
+      m.FadingBackground.uri = focusedContent.hdBackgroundImageUrl
     end if
 
   end if

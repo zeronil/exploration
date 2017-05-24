@@ -5,16 +5,42 @@
 <component name="customItem" extends="Group">
 
   <interface>
+
+    <function name="hasFocus"  />
+
     <field id="width" type="float" onChange="updateLayout"/>
     <field id="height" type="float" onChange="updateLayout"/>
     <field id="itemContent" type="node" onChange="itemContentChanged" />
+    <field id="focusPercent" type="float" onChange="itemFocusChanged" />
+    <field id="rowFocusPercent" type="float" onChange="itemFocusChanged" />
   </interface>
 
   <script type="text/brightscript" uri="pkg:/components/Item/CustomItem.brs" />
 
   <children>
+
     <Rectangle id="posterBackground" color="0x00000088" />
+
     <Poster id="poster" />
+
+    <Rectangle
+      id="focusRectangle"
+      color="#FFFFFF"
+      visible="false" />
+
+    <Animation
+      id="focusRectangleAnimation"
+      duration="0.8"
+      easeFunction="inCubic" >
+
+      <FloatFieldInterpolator
+        id = "focusRectangleOpacity"
+        key="[0.0, 0.1, 1.0]"
+        keyValue="[ 0.0, 0.0, 0.8 ]"
+        fieldToInterp="focusRectangle.opacity" />
+
+    </Animation>
+
   </children>
 
 </component>
