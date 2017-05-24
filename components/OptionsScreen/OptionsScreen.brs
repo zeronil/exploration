@@ -14,9 +14,9 @@ sub init()
   ' Create buttons
 
   m.buttonDefinitions = [
-    {title: "Red Banner", color: "0xFF0000"},
-    {title: "Purple Banner", color: "0x551A8B"},
-    {title: "Green Banner", color: "0x007700"}
+    {title: "Red Theme", color: "0x990000"},
+    {title: "Purple Theme", color: "0x551A8B"},
+    {title: "Green Theme", color: "0x007700"}
   ]
 
   m.buttons.content = contentList2SimpleNode(m.buttonDefinitions)

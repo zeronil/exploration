@@ -23,21 +23,43 @@
 
     <Poster id="poster" />
 
-    <Rectangle
-      id="focusRectangle"
-      color="#FFFFFF"
-      visible="false" />
+    <Group id="detailGroup" visible="false" >
+
+      <Rectangle
+        id="backgroundRectangle"
+        color="0xFFFFFF" />
+
+      <Rectangle
+        id="contentRectangle"
+        color="0xFFFFFF"
+        opacity="0.5" />
+
+      <Label
+        id="titleShadowLabel"
+        color="0xFFFFFF"
+        font="font:LargeBoldSystemFont"
+        horizAlign="center"
+        vertAlign="center" />
+
+      <Label
+        id="titleLabel"
+        color="0xFFFFFF"
+        font="font:LargeBoldSystemFont"
+        horizAlign="center"
+        vertAlign="center" />
+
+    </Group>
 
     <Animation
-      id="focusRectangleAnimation"
+      id="detailGroupAnimation"
       duration="0.8"
-      easeFunction="inCubic" >
+      easeFunction="linear" >
 
       <FloatFieldInterpolator
-        id = "focusRectangleOpacity"
-        key="[0.0, 0.1, 1.0]"
-        keyValue="[ 0.0, 0.0, 0.8 ]"
-        fieldToInterp="focusRectangle.opacity" />
+        id = "detailGroupOpacity"
+        key="[0.0, 0.6, 1.0]"
+        keyValue="[ 0.0, 0.0, 0.75]"
+        fieldToInterp="detailGroup.opacity" />
 
     </Animation>
 
