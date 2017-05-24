@@ -48,7 +48,6 @@ sub itemFocusChanged(message as object)
     if focusPercent = 0 then
       print "CustomItem.brs [itemFocusChanged] Lost focus on " message.getField() ": uri = " m.poster.uri
       m.hasFocus = false
-      ' unobserveField("m.global.keyColor")
     end if
 
     m.focusRectangle.visible = false
@@ -65,16 +64,10 @@ sub itemFocusChanged(message as object)
       m.focusRectangle.color = m.global.keyColor
       m.focusRectangleAnimation.control = "start"
 
-      ' observeField("m.global.keyColor", "handleKeyColorChanged")
-
     end if
 
   end if
 
-end sub
-
-sub handleKeyColorChanged()
-  m.focusRectangle.color = m.global.keyColor
 end sub
 
 ' =============================================================================

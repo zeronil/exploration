@@ -68,6 +68,9 @@ sub onButtonSelectedChanged()
 
   m.top.selectedColor = m.buttonDefinitions[m.top.itemSelected].color
 
+  ' Save the selected color as a global "keyColor" (the keyColor is used by CustomItem
+  ' as the highlight color for selected RowList itens)
+
   if not m.global.hasField("keyColor")
     m.global.addFields( {keyColor: m.top.selectedColor} )
   else
