@@ -12,6 +12,7 @@ sub init()
   m.detailGroupAnimation = m.top.findNode("detailGroupAnimation")
   m.titleLabel = m.top.findNode("titleLabel")
   m.titleShadowLabel = m.top.findNode("titleShadowLabel")
+  m.detailMaskGroup = m.top.findNode("detailMaskGroup")
 end sub
 
 ' =============================================================================
@@ -144,6 +145,10 @@ sub updateLayout()
 
     m.backgroundRectangle.width  = detailGroupWidth
     m.backgroundRectangle.height = detailGroupHeight
+
+    m.detailMaskGroup.width  = detailGroupWidth
+    m.detailMaskGroup.height = detailGroupHeight
+    m.detailMaskGroup.maskSize = [detailGroupWidth, detailGroupHeight]
 
     contentHeight = detailGroupHeight * 0.96
     contentBorder = detailGroupHeight * 0.04

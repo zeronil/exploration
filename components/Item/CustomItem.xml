@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<!-- Copyright 2016 Roku Corp.  All Rights Reserved. -->
-
 <component name="customItem" extends="Group">
 
   <interface>
@@ -29,10 +27,16 @@
         id="backgroundRectangle"
         color="0xFFFFFF" />
 
-      <Rectangle
-        id="contentRectangle"
-        color="0xFFFFFF"
-        opacity="0.5" />
+      <MaskGroup
+        id="detailMaskGroup"
+        maskUri="pkg:/images/custom-item-mask.png">
+
+        <Rectangle
+          id="contentRectangle"
+          color="0xFFFFFF"
+          opacity="0.5" />
+
+      </MaskGroup>
 
       <Label
         id="titleShadowLabel"
