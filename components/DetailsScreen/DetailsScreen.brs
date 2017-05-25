@@ -1,5 +1,3 @@
-' ********** Copyright 2016 Roku Corp.  All Rights Reserved. **********
-
  ' =============================================================================
  ' init - Initializes the Details screen, sets all observers and configures buttons for Details screen
  ' =============================================================================
@@ -15,9 +13,14 @@ function init()
   m.videoPlayer = m.top.findNode("VideoPlayer")
   m.poster = m.top.findNode("Poster")
   m.description = m.top.findNode("Description")
-  m.background = m.top.findNode("Background")
-  m.fadeIn = m.top.findNode("fadeinAnimation")
-  m.fadeOut = m.top.findNode("fadeoutAnimation")
+  m.detailsOverhang = m.top.findNode("detailsOverhang")
+  m.overhangBackground = m.top.findNode("overhangBackground")
+  m.hudRectangle = m.top.findNode("HUDRectangle")
+  m.backgroundPoster = m.top.findNode("backgroundPoster")
+  m.background2Poster = m.top.findNode("background2Poster")
+  m.backgroundPosterAnimation = m.top.findNode("backgroundPosterParallelAnimation")
+  m.fadeInBackgroundGroup = m.top.findNode("fadeInBackgroundGroup")
+  m.fadeOutBackgroundGroup = m.top.findNode("fadeOutBackgroundGroup")
 
   ' Create buttons
 
@@ -41,25 +44,49 @@ sub onVisibleChange()
 
   if m.top.visible
 
-    print "DetailsScreen.brs - [onVisibleChange] Focus first button"
+    print "DetailsScreen.brs - [onVisibleChange] Set up DetailsScreen"
 
-    m.fadeIn.control="start"
+    ' Focus first button
+
     m.buttons.jumpToItem = 0
     m.buttons.setFocus(true)
 
-  ' Else exiting video, so stop the video playback
+    ' Set the color of the Overhang and the H.U.D. area at the bottom to the global keyColor
+
+    m.overhangBackground.color = m.global.keyColor
+    m.hudRectangle.color = m.global.keyColor
+
+    ' Start the animation of the background images
+
+    m.backgroundPoster.opacity = "0.0"
+    m.background2Poster.opacity = "0.2"
+    m.fadeInBackgroundGroup.control = "start"
+    m.backgroundPosterAnimation.control = "start"
+
+  ' Else exiting DetailsScreen
 
   else
 
-    print "DetailsScreen.brs - [onVisibleChange] Stop video playback"
+    print "DetailsScreen.brs - [onVisibleChange] Tear down DetailsScreen"
 
-    m.fadeOut.control="start"
+    ' Begin to fade out the DetailsScreen
+
+    m.fadeOutBackgroundGroup.control = "start"
+
+    ' Stop the animation of the background images
+
+    m.backgroundPosterAnimation.control = "stop"
+
+    ' Make sure the Video component is not playing a video and is not visible
 
     m.videoPlayer.visible = false
     m.videoPlayer.control = "stop"
 
-    m.poster.uri=""
-    m.background.uri=""
+    ' Remove the Poster images
+
+    m.poster.uri = ""
+    m.backgroundPoster.uri = ""
+    m.background2Poster.uri = ""
 
   end if
 
@@ -85,11 +112,21 @@ end sub
 
 sub onVideoVisibleChange()
 
-  print "DetailsScreen.brs - [onVideoVisibleChange] Set button focus and stop video playback (end)"
+  print "DetailsScreen.brs - [onVideoVisibleChange]"
 
   if m.videoPlayer.visible = false and m.top.visible = true
+
+    ' Make sure the buttons have the focus
+
     m.buttons.setFocus(true)
+
+    ' Make sure the Video component is not playing a video
+
     m.videoPlayer.control = "stop"
+
+    ' Re-start the background image animation
+
+    m.backgroundPosterAnimation.control = "start"
 
   end if
 
@@ -101,15 +138,26 @@ end sub
 
 sub onItemSelected()
 
-  print "DetailsScreen.brs - [onItemSelected]"
+  print "DetailsScreen.brs - [onItemSelected] button = " m.top.itemSelected
 
   ' First button in the list is Play
 
   if m.top.itemSelected = 0
+
+    ' Stop the background image animation
+
+    m.backgroundPosterAnimation.control = "stop"
+
+    ' Make the Video component visible and begin playback
+
     m.videoPlayer.visible = true
     m.videoPlayer.setFocus(true)
     m.videoPlayer.control = "play"
+
+    ' Watch for changes to the state of the Video component (e.g., video playback stopped)
+
     m.videoPlayer.observeField("state", "onVideoPlayerStateChange")
+
   end if
 
 end sub
@@ -124,7 +172,8 @@ sub onVideoPlayerStateChange()
 
   'Error handling
 
-  if m.videoPlayer.state = "error"
+  if m.videoPlayer.state = "error" then
+
     m.videoPlayer.visible = false
 
   ' Active playback handling
@@ -134,6 +183,7 @@ sub onVideoPlayerStateChange()
   ' Playback complete handling
 
   else if m.videoPlayer.state = "finished"
+
     m.videoPlayer.visible = false
 
   end if
@@ -148,12 +198,28 @@ sub onContentChange()
 
   print "DetailsScreen.brs - [onContentChange]"
 
+  ' Set the Overhang title to the name of the selected media (if available)
+
+  if m.top.content.title <> invalid and Len(m.top.content.title) > 0 then
+    m.detailsOverhang.title = m.top.content.title
+  else
+    m.detailsOverhang = "Exploration"
+  end if
+
+  ' Initialize the Description component that present information about the selected media item
+
   m.description.content = m.top.content
   m.description.Description.width = "1120"
+
+  ' Assign the selected media content to the Video component
+
   m.videoPlayer.content = m.top.content
-  m.top.streamUrl  = m.top.content.url
+
+  ' Initialize the Poster images with the URI of the the content's background image
+
   m.poster.uri = m.top.content.hdBackgroundImageUrl
-  m.background.uri = m.top.content.hdBackgroundImageUrl
+  m.backgroundPoster.uri = m.top.content.hdBackgroundImageUrl
+  m.background2Poster.uri = m.top.content.hdBackgroundImageUrl
 
 end sub
 

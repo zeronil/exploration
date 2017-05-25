@@ -22,43 +22,125 @@
 
   <children>
 
-    <!-- Background poster -->
+    <!-- Background poster (animated) -->
 
-    <Poster
-      id="Background"
-      width="1920"
-      height="1080" />
+    <Group
+      id="backgroundGroup" >
+
+      <Poster
+        id="background2Poster"
+        width="1920"
+        height="1080"
+        scaleRotateCenter="[960.0, 540.0]" />
+
+      <Poster
+        id="backgroundPoster"
+        width="1920"
+        height="1080"
+        scaleRotateCenter="[960.0, 540.0]" />
+
+      <!-- Background dimming -->
+
+      <Rectangle
+        id="backgroundDimming"
+        translation="[0,0]"
+        width="1920"
+        height="1080"
+        color="0x000000"
+        opacity="0.6" />
+
+    </Group>
+
+    <!-- Animation for background images -->
+
+    <ParallelAnimation
+      id="backgroundPosterParallelAnimation" >
+
+      <!-- First background image -->
+
+      <Animation
+        id="backgroundPosterScaleAnimation"
+        easeFunction="linear"
+        repeat="true"
+        duration="8">
+
+        <Vector2DFieldInterpolator
+          key="[0.0, 0.2, 1.0]"
+          keyValue="[[1.0, 1.0], [1.0, 1.0], [2.0, 2.0]]"
+          fieldToInterp="backgroundPoster.scale"/>
+
+      </Animation>
+
+      <Animation
+        id="backgroundPosterOpacityAnimation"
+        easeFunction="linear"
+        repeat="true"
+        duration="8">
+
+        <FloatFieldInterpolator
+          key="[0.0, 0.2, 0.6, 1.0]"
+          keyValue="[0.0, 0.0, 1.0, 0.0]"
+          fieldToInterp="backgroundPoster.opacity"/>
+
+      </Animation>
+
+      <!-- Second background image -->
+
+      <Animation
+        id="background2PosterScaleAnimation"
+        easeFunction="linear"
+        repeat="true"
+        delay="4"
+        duration="8">
+
+        <Vector2DFieldInterpolator
+          key="[0.0, 0.2, 1.0]"
+          keyValue="[[1.0, 1.0], [1.0, 1.0], [2.0, 2.0]]"
+          fieldToInterp="background2Poster.scale"/>
+
+      </Animation>
+
+      <Animation
+        id="background2PosterOpacityAnimation"
+        easeFunction="linear"
+        delay="4"
+        repeat="true"
+        duration="8">
+
+        <FloatFieldInterpolator
+          key="[0.0, 0.2, 0.6, 1.0]"
+          keyValue="[0.2, 0.2, 1.0, 0.0]"
+          fieldToInterp="background2Poster.opacity"/>
+
+      </Animation>
+
+    </ParallelAnimation>
+
+    <!-- Animation to fade in/out the entire background -->
 
     <Animation
-      id="fadeinAnimation"
+      id="fadeInBackgroundGroup"
       repeat="false"
       duration="0.3">
+
       <FloatFieldInterpolator
-        id="backgroundInterpolator"
         key="[0.0, 1.0]"
         keyValue="[0.0, 1.0]"
-        fieldToInterp="Background.opacity"/>
+        fieldToInterp="backgroundGroup.opacity"/>
+
     </Animation>
 
     <Animation
-      id="fadeoutAnimation"
+      id="fadeOutBackgroundGroup"
       repeat="false"
       duration="0.3">
+
       <FloatFieldInterpolator
-        id="backgroundInterpolator"
         key="[0.0, 1.0]"
         keyValue="[1.0, 0.0]"
-        fieldToInterp="Background.opacity"/>
+        fieldToInterp="backgroundGroup.opacity"/>
+
     </Animation>
-
-    <!-- Background fade -->
-
-    <Rectangle
-      translation="[0,0]"
-      width="1920"
-      height="1080"
-      color="0x000000"
-      opacity="0.8" />
 
     <!-- Control buttons (Button List) -->
 
@@ -72,16 +154,17 @@
       itemSpacing="[0,20]"
       itemSize="[300, 35]" />
 
-    <!-- Black hud at bottom of the Details Screen -->
+    <!-- Black H.U.D. at bottom of the Details Screen -->
 
     <Rectangle
       id="HUDRectangle"
-      color="0x000000FF"
+      color="0x000000"
+      opacity="0.5"
       width="1920"
       height="300"
       translation="[0, 780]" />
 
-    <!-- Item poster -->
+    <!-- Item poster (small copy of background image representing the selected content) -->
 
     <Poster
       id="Poster"
@@ -96,11 +179,20 @@
       translation="[500, 800]"
       itemSpacings="[7, 16]" />
 
+    <!-- Solid color background for Overhang (setting color on the Overhang itself
+         results in the color being extended below the bottom shaded area). -->
+
+    <Rectangle
+      id="overhangBackground"
+      width="1920"
+      height="150"
+      translation="[0,0]" />
+
     <!-- Overhang Node (has to be rendered after others) -->
 
     <Overhang
-      showClock="true"
-      title="Hero-Grid-Channel" />
+      id="detailsOverhang"
+      showClock="true" />
 
     <!-- Playback node -->
 
