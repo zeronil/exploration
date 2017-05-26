@@ -26,7 +26,7 @@ function init()
 
   result = []
 
-  for each button in ["Play", "Second button"]
+  for each button in ["Play"]
     result.push({title : button})
   end for
 
@@ -50,6 +50,11 @@ sub onVisibleChange()
 
     m.buttons.jumpToItem = 0
     m.buttons.setFocus(true)
+
+    ' Set the color of the button text (focused and unfocused since there is only one button in the list) 
+
+    m.buttons.color = m.global.keyColor
+    m.buttons.focusedColor = m.global.keyColor
 
     ' Set the color of the Overhang and the H.U.D. area at the bottom to the global keyColor
 

@@ -146,13 +146,12 @@
 
     <LabelList
       id="Buttons"
-      translation="[1440,480]"
-      color="0xFFFFFFFF"
-      focusedColor="0x333333FF"
-      numRows="7"
+      translation="[1540,430]"
+      opacity="0.8"
+      numRows="2"
       vertFocusAnimationStyle="floatingFocus"
       itemSpacing="[0,20]"
-      itemSize="[300, 35]" />
+      itemSize="[200, 100]" />
 
     <!-- Black H.U.D. at bottom of the Details Screen -->
 
@@ -168,7 +167,7 @@
 
     <Poster
       id="Poster"
-      translation="[120, 825]"
+      translation="[120, 815]"
       width="300"
       height="178" />
 
@@ -176,8 +175,7 @@
 
     <Description
       id="Description"
-      translation="[500, 800]"
-      itemSpacings="[7, 16]" />
+      translation="[500, 810]" />
 
     <!-- Solid color background for Overhang (setting color on the Overhang itself
          results in the color being extended below the bottom shaded area). -->
@@ -186,6 +184,7 @@
       id="overhangBackground"
       width="1920"
       height="150"
+      opacity="0.8"
       translation="[0,0]" />
 
     <!-- Overhang Node (has to be rendered after others) -->

@@ -1,16 +1,17 @@
-' ********** Copyright 2016 Roku Corp.  All Rights Reserved. **********
-
  ' =============================================================================
  ' init - Set top interfaces
  ' =============================================================================
 
 sub init()
 
-  print "Description.brs - [init]"
+  print "description.brs - [init]"
 
-  m.top.Title  = m.top.findNode("Title")
-  m.top.Description = m.top.findNode("Description")
-  m.top.ReleaseDate = m.top.findNode("ReleaseDate")
+  m.titleGroup  = m.top.findNode("titleGroup")
+  m.titleShadow  = m.top.findNode("titleShadow")
+
+  m.top.title  = m.top.findNode("title")
+  m.top.releaseDate = m.top.findNode("releaseDate")
+  m.top.description = m.top.findNode("description")
 
 end sub
 
@@ -20,44 +21,69 @@ end sub
 
 sub onContentChanged()
 
-  print "Description.brs - [onContentChanged]"
+  print "description.brs - [onContentChanged]"
 
   item = m.top.content
 
-  ' TITLE
+  ' Title - Display title text (with a shadow) if title text is available
 
-  title = item.title.toStr()
+  value = item.title.toStr()
+  ' value = invalid
 
-  if title <> invalid then
-    m.top.Title.text = title.toStr()
+  if value <> invalid and value.toStr().Len() > 0 then
+    m.top.title.text = value.toStr()
+    m.titleShadow.text = value.toStr()
+    m.titleGroup.visible = true
+    hasTitle = true
+  else
+    hasTitle = false
+    m.titleGroup.visible = false
   end if
 
-  ' DESCRIPTION
+  ' Release Date - Display the release date if a release date is available
+
+  value = item.pubDate
+  ' value = invalid
+
+  if value <> invalid and value.toStr().Len() > 0 then
+
+    hasReleaseDate = true
+    m.top.releaseDate.visible = true
+
+    ' The date string is GMT, so split the string to seperate the time (e.g., 12:00:00 GMT)
+    ' from the date
+
+    regex = CreateObject("roRegex", "\s\d\d:", "")
+    splitAtTime = regex.split(value.toStr())
+
+    if splitAtTime.Count() = 2 then
+      m.top.releaseDate.text = splitAtTime[0]
+    else
+      m.top.releaseDate.text = value.toStr()
+    end if
+
+  end if
+
+  ' Description - Display content description if description text is available
 
   value = item.description
 
-  if value <> invalid then
-
-    if value.toStr() <> "" then
-      m.top.Description.text = value.toStr()
-    else
-      m.top.Description.text = "No description"
-    end if
-
+  if value <> invalid and value.toStr().Len() > 0 then
+      m.top.description.text = value.toStr()
+      m.top.description.visible = true
+  else
+    m.top.description.visible = false
   end if
 
-  ' RELEASE DATE
+  ' Format the three sections vertically ("title", "releaseDate" and "description") based on what
+  ' data is available for the item
 
-  value = item.ReleaseDate
-
-  if value <> invalid then
-
-    if value <> ""
-      m.top.ReleaseDate.text = value.toStr()
-    else
-      m.top.ReleaseDate.text = "No Release Date"
-    end if
-
+  if hasTitle and hasReleaseDate then
+    m.top.itemSpacings = "[15.0]"
+  else if hasTitle then
+    m.top.itemSpacings = "[-20.0, 15]"
+  else
+    m.top.itemSpacings = "[-35.0]"
   end if
 
 end sub
