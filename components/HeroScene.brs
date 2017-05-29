@@ -15,8 +15,9 @@ sub init()
 
   m.HeroScreen = m.top.FindNode("HeroScreen")
 
-  ' OverhangBackground node
+  ' Overhang
 
+  m.OverhangBar = m.top.findNode("OverhangBar")
   m.OverhangBackground = m.top.FindNode("OverhangBackground")
   m.OverhangFadeInColor = m.top.findNode("OverhangFadeInColorInterp")
   m.OverhangBackgroundGray = m.top.findNode("OverhangBackgroundGray")
@@ -157,11 +158,11 @@ sub onHeroContentChange()
     ' Warn the user if there was a bad request (numBadRequests from UrlHandler propagated through HeroScreen)
 
     if m.top.numBadRequests > 0
-      m.HeroScreen.visible = "true"
-      m.WarningDialog.visible = "true"
+      m.HeroScreen.visible = true
+      m.WarningDialog.visible = true
       m.WarningDialog.message = (m.top.numBadRequests).toStr() + " request(s) for content failed. Press '*' or OK or '<-' to continue."
     else
-      m.HeroScreen.visible = "true"
+      m.HeroScreen.visible = true
       m.HeroScreen.setFocus(true)
     end if
 
@@ -169,7 +170,7 @@ sub onHeroContentChange()
   ' (the default message is pre-defined in the XML)
 
   else
-    m.WarningDialog.visible = "true"
+    m.WarningDialog.visible = true
   end if
 
 end sub
@@ -185,10 +186,17 @@ sub onHeroRowItemSelected()
   print "HeroScene.brs - [onHeroRowItemSelected]"
 
   m.FadeInDetails.control = "start"
-  m.HeroScreen.visible = "false"
+
+  m.HeroScreen.visible = false
+
   m.DetailsScreen.content = m.HeroScreen.focusedContent
   m.DetailsScreen.setFocus(true)
-  m.DetailsScreen.visible = "true"
+  m.DetailsScreen.visible = true
+
+  ' Since the Overhang in DetailsScreen is translucent, make the OverhangBar invisible so that 
+  ' it is not seen behind DetailsScreen
+
+  m.OverhangBar.visible = false
 
 end sub
 
@@ -216,7 +224,7 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
 
       if m.WarningDialog.visible = true then
         print "HeroScene.brs - [onKeyEvent] Remove warning"
-        m.WarningDialog.visible = "false"
+        m.WarningDialog.visible = false
         m.HeroScreen.setFocus(true)
         isKeyEventHandled = true
 
@@ -237,11 +245,20 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
       ' If Details opened then need to transition to HeroScreen
 
       else if m.HeroScreen.visible = false and m.DetailsScreen.videoPlayerVisible = false then
+
         print "HeroScene.brs - [onKeyEvent] Fade out details"
+
+        ' Since the Overhang in DetailsScreen is translucent, OverhangBar was made invisible so that
+        ' it is not seen
+
+        m.OverhangBar.visible = true
+        m.DetailsScreen.visible = false
+
         m.FadeOutDetails.control = "start"
-        m.HeroScreen.visible = "true"
-        m.DetailsScreen.visible = "false"
+
+        m.HeroScreen.visible = true
         m.HeroScreen.setFocus(true)
+
         isKeyEventHandled = true
 
       end if
@@ -254,10 +271,10 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
 
       print "HeroScene.brs - [onKeyEvent] OK key pressed"
 
-      ' If WarningDialog is open then remove and make HeroScreen visible
+      ' If WarningDialog is open then remove and focus the HeroScreen
 
       if m.WarningDialog.visible = true then
-        m.WarningDialog.visible = "false"
+        m.WarningDialog.visible = false
         m.HeroScreen.setFocus(true)
       end if
 
@@ -271,18 +288,24 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
 
       if m.WarningDialog.visible = true then
         print "HeroScene.brs - [onKeyEvent] OPTIONS key pressed - hide warning"
-        m.WarningDialog.visible = "false"
+        m.WarningDialog.visible = false
         m.HeroScreen.setFocus(true)
 
       ' Else make the OptionsScreen visible
 
       else if m.OptionsScreen.visible = false then
+
         print "HeroScene.brs - [onKeyEvent] OPTIONS key pressed - Fade in options"
+
         m.FadeInOptions.control = "start"
-        m.HeroScreen.visible = "false"
+
+        m.HeroScreen.visible = false
+
+        m.OptionsScreen.visible = true
         m.OptionsScreen.setFocus(true)
-        m.OptionsScreen.visible = "true"
+
         m.OverhangBackgroundGray.opacity = 1.0
+
         isKeyEventHandled = true
 
       endif
@@ -304,8 +327,8 @@ sub fadeOutOptionsScreen()
   print "HeroScene.brs - [fadeOutOptionsScreen]"
 
   m.FadeOutOptions.control = "start"
-  m.OptionsScreen.visible = "false"
+  m.OptionsScreen.visible = false
   m.HeroScreen.setFocus(true)
-  m.HeroScreen.visible = "true"
+  m.HeroScreen.visible = true
 
 end sub

@@ -24,19 +24,23 @@
     <Group id="detailGroup" visible="false" >
 
       <Rectangle
-        id="backgroundRectangle"
-        color="0xFFFFFF" />
+        id="backgroundRectangle" />
 
       <MaskGroup
         id="detailMaskGroup"
-        maskUri="pkg:/images/custom-item-mask.png">
+        maskUri="pkg:/images/custom-item-mask-rev.png">
 
         <Rectangle
           id="contentRectangle"
-          color="0xFFFFFF"
+          color="0x000000"
           opacity="0.5" />
 
       </MaskGroup>
+
+      <Rectangle
+        id="backgroundTopBorderRectangle"
+        color="0x000000"
+        height="2" />
 
       <Label
         id="titleShadowLabel"

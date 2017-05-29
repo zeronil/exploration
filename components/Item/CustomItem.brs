@@ -7,6 +7,7 @@ sub init()
   m.poster = m.top.findNode("poster")
   m.posterBackground = m.top.findNode("posterBackground")
   m.backgroundRectangle = m.top.findNode("backgroundRectangle")
+  m.backgroundTopBorderRectangle = m.top.findNode("backgroundTopBorderRectangle")
   m.contentRectangle = m.top.findNode("contentRectangle")
   m.detailGroup = m.top.findNode("detailGroup")
   m.detailGroupAnimation = m.top.findNode("detailGroupAnimation")
@@ -145,6 +146,7 @@ sub updateLayout()
 
     m.backgroundRectangle.width  = detailGroupWidth
     m.backgroundRectangle.height = detailGroupHeight
+    m.backgroundTopBorderRectangle.width  = detailGroupWidth
 
     m.detailMaskGroup.width  = detailGroupWidth
     m.detailMaskGroup.height = detailGroupHeight

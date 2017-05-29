@@ -14,9 +14,9 @@ sub init()
   ' Create buttons
 
   m.buttonDefinitions = [
-    {title: "Red Theme", color: "0x990000"},
-    {title: "Purple Theme", color: "0x551A8B"},
-    {title: "Green Theme", color: "0x007700"}
+    {title: "Red Theme", color: "0x990000", tint: "0xFF5555"},
+    {title: "Purple Theme", color: "0x551A8B", tint: "0xB27DFB"},
+    {title: "Green Theme", color: "0x007700", tint: "0x448844"}
   ]
 
   m.buttons.content = contentList2SimpleNode(m.buttonDefinitions)
@@ -67,14 +67,16 @@ end sub
 sub onButtonSelectedChanged()
 
   m.top.selectedColor = m.buttonDefinitions[m.top.itemSelected].color
+  m.top.selectedColorTint = m.buttonDefinitions[m.top.itemSelected].tint
 
   ' Save the selected color as a global "keyColor" (the keyColor is used by CustomItem
   ' as the highlight color for selected RowList itens)
 
   if not m.global.hasField("keyColor")
-    m.global.addFields( {keyColor: m.top.selectedColor} )
+    m.global.addFields( {keyColor: m.top.selectedColor, keyColorTint: m.top.selectedColorTint} )
   else
     m.global.keyColor = m.top.selectedColor
+    m.global.keyColorTint = m.top.selectedColorTint
   end if
 
   print "OptionsScreen.brs - [onButtonSelectedChanged]" m.top.itemSelected " (keyColor = " m.global.keyColor " " m.top.selectedColor ")"

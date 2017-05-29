@@ -146,7 +146,11 @@
 
     <LabelList
       id="Buttons"
-      translation="[1540,430]"
+      translation="[1560,370]"
+      color="0xFFFFFF"
+      focusedColor="0xFFFFFF"
+      focusBitmapUri="pkg:/images/basic.9.png"
+      textHorizAlign="center"
       opacity="0.8"
       numRows="2"
       vertFocusAnimationStyle="floatingFocus"
@@ -191,6 +195,7 @@
 
     <Overhang
       id="detailsOverhang"
+      optionsAvailable="false"
       showClock="true" />
 
     <!-- Playback node -->

@@ -8,6 +8,7 @@
     <field id="itemSelected" type="integer" alwaysnotify="true" alias="Buttons.itemSelected" onChange="onButtonSelectedChanged" />
 
     <field id="selectedColor" type="string" />
+    <field id="selectedColorTint" type="string" />
 
   </interface>
 

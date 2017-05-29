@@ -26,11 +26,33 @@ function init()
 
   result = []
 
-  for each button in ["Play"]
-    result.push({title : button})
+  for each button in ["Play", "Data"]
+  result.push({title: button})
   end for
 
   m.buttons.content = contentList2SimpleNode(result)
+
+end function
+
+' =============================================================================
+' onKeyEvent - Called when a key on the remote is pressed
+' =============================================================================
+
+function onKeyEvent(key as String, isPressed as Boolean) as Boolean
+
+  print "DetailsScreen.brs - [onKeyEvent] key = "; key; ", isPressed = "; isPressed
+
+  isKeyEventHandled = false
+
+  ' There doesn't seem to be a way to disable the "Options" in the Overhang in "HeroScene",
+  ' so if the options button is pressed, set the flag that the key has been handled so that
+  ' it doesn't propagate to "HeroScene"
+
+  if key = "options" then
+    isKeyEventHandled = true
+  end if
+
+  return isKeyEventHandled
 
 end function
 
@@ -51,10 +73,9 @@ sub onVisibleChange()
     m.buttons.jumpToItem = 0
     m.buttons.setFocus(true)
 
-    ' Set the color of the button text (focused and unfocused since there is only one button in the list) 
+    ' Set the color of the button (focused)
 
-    m.buttons.color = m.global.keyColor
-    m.buttons.focusedColor = m.global.keyColor
+    m.buttons.focusBitmapBlendColor = m.global.keyColorTint
 
     ' Set the color of the Overhang and the H.U.D. area at the bottom to the global keyColor
 
