@@ -16,9 +16,7 @@ function init()
   m.detailsOverhang = m.top.findNode("detailsOverhang")
   m.overhangBackground = m.top.findNode("overhangBackground")
   m.hudRectangle = m.top.findNode("HUDRectangle")
-  m.backgroundPoster = m.top.findNode("backgroundPoster")
-  m.background2Poster = m.top.findNode("background2Poster")
-  m.backgroundPosterAnimation = m.top.findNode("backgroundPosterParallelAnimation")
+  m.animatedBackground = m.top.findNode("animatedBackground")
   m.fadeInBackgroundGroup = m.top.findNode("fadeInBackgroundGroup")
   m.fadeOutBackgroundGroup = m.top.findNode("fadeOutBackgroundGroup")
 
@@ -64,7 +62,7 @@ sub onVisibleChange()
 
   ' If entering Details screen, set the focus to the first button
 
-  if m.top.visible
+  if m.top.visible then
 
     print "DetailsScreen.brs - [onVisibleChange] Set up DetailsScreen"
 
@@ -84,10 +82,8 @@ sub onVisibleChange()
 
     ' Start the animation of the background images
 
-    m.backgroundPoster.opacity = "0.0"
-    m.background2Poster.opacity = "0.2"
     m.fadeInBackgroundGroup.control = "start"
-    m.backgroundPosterAnimation.control = "start"
+    m.animatedBackground.visible = true
 
   ' Else exiting DetailsScreen
 
@@ -101,18 +97,12 @@ sub onVisibleChange()
 
     ' Stop the animation of the background images
 
-    m.backgroundPosterAnimation.control = "stop"
+    m.animatedBackground.visible = false
 
     ' Make sure the Video component is not playing a video and is not visible
 
     m.videoPlayer.visible = false
     m.videoPlayer.control = "stop"
-
-    ' Remove the Poster images
-
-    m.poster.uri = ""
-    m.backgroundPoster.uri = ""
-    m.background2Poster.uri = ""
 
   end if
 
@@ -152,7 +142,7 @@ sub onVideoVisibleChange()
 
     ' Re-start the background image animation
 
-    m.backgroundPosterAnimation.control = "start"
+    m.animatedBackground.visible = true
 
   end if
 
@@ -172,7 +162,7 @@ sub onItemSelected()
 
     ' Stop the background image animation
 
-    m.backgroundPosterAnimation.control = "stop"
+    m.animatedBackground.visible = false
 
     ' Make the Video component visible and begin playback
 
@@ -244,8 +234,7 @@ sub onContentChange()
   ' Initialize the Poster images with the URI of the the content's background image
 
   m.poster.uri = m.top.content.hdBackgroundImageUrl
-  m.backgroundPoster.uri = m.top.content.hdBackgroundImageUrl
-  m.background2Poster.uri = m.top.content.hdBackgroundImageUrl
+  m.animatedBackground.imageURL = m.top.content.hdBackgroundImageUrl
 
 end sub
 

@@ -22,99 +22,18 @@
 
   <children>
 
-    <!-- Background poster (animated) -->
+    <!-- No idea why a -157 horizontal translation must be used -->
 
-    <Group
-      id="backgroundGroup" >
+    <PanelSet
+      id="backgroundPanelSet"
+      translation="[-157, 0]">
 
-      <Poster
-        id="background2Poster"
-        width="1920"
-        height="1080"
-        scaleRotateCenter="[960.0, 540.0]" />
+      <!-- Background animation  -->
 
-      <Poster
-        id="backgroundPoster"
-        width="1920"
-        height="1080"
-        scaleRotateCenter="[960.0, 540.0]" />
+      <AnimatedBackground
+          id="animatedBackground" />
 
-      <!-- Background dimming -->
-
-      <Rectangle
-        id="backgroundDimming"
-        translation="[0,0]"
-        width="1920"
-        height="1080"
-        color="0x000000"
-        opacity="0.6" />
-
-    </Group>
-
-    <!-- Animation for background images -->
-
-    <ParallelAnimation
-      id="backgroundPosterParallelAnimation" >
-
-      <!-- First background image -->
-
-      <Animation
-        id="backgroundPosterScaleAnimation"
-        easeFunction="linear"
-        repeat="true"
-        duration="8">
-
-        <Vector2DFieldInterpolator
-          key="[0.0, 0.2, 1.0]"
-          keyValue="[[1.0, 1.0], [1.0, 1.0], [2.0, 2.0]]"
-          fieldToInterp="backgroundPoster.scale"/>
-
-      </Animation>
-
-      <Animation
-        id="backgroundPosterOpacityAnimation"
-        easeFunction="linear"
-        repeat="true"
-        duration="8">
-
-        <FloatFieldInterpolator
-          key="[0.0, 0.2, 0.6, 1.0]"
-          keyValue="[0.0, 0.0, 1.0, 0.0]"
-          fieldToInterp="backgroundPoster.opacity"/>
-
-      </Animation>
-
-      <!-- Second background image -->
-
-      <Animation
-        id="background2PosterScaleAnimation"
-        easeFunction="linear"
-        repeat="true"
-        delay="4"
-        duration="8">
-
-        <Vector2DFieldInterpolator
-          key="[0.0, 0.2, 1.0]"
-          keyValue="[[1.0, 1.0], [1.0, 1.0], [2.0, 2.0]]"
-          fieldToInterp="background2Poster.scale"/>
-
-      </Animation>
-
-      <Animation
-        id="background2PosterOpacityAnimation"
-        easeFunction="linear"
-        delay="4"
-        repeat="true"
-        duration="8">
-
-        <FloatFieldInterpolator
-          key="[0.0, 0.2, 0.6, 1.0]"
-          keyValue="[0.2, 0.2, 1.0, 0.0]"
-          fieldToInterp="background2Poster.opacity"/>
-
-      </Animation>
-
-    </ParallelAnimation>
+    </PanelSet>
 
     <!-- Animation to fade in/out the entire background -->
 

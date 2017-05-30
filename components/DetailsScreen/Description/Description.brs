@@ -4,7 +4,7 @@
 
 sub init()
 
-  print "description.brs - [init]"
+  print "Description.brs - [init]"
 
   m.titleGroup  = m.top.findNode("titleGroup")
   m.titleShadow  = m.top.findNode("titleShadow")
@@ -21,7 +21,7 @@ end sub
 
 sub onContentChanged()
 
-  print "description.brs - [onContentChanged]"
+  print "Description.brs - [onContentChanged]"
 
   item = m.top.content
 
