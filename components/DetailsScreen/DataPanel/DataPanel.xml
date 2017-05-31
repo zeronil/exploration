@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<component name="Data" extends="Panel" >
+<component name="DataPanel" extends="Panel" >
 
   <interface>
 
     <!-- URL for the image used as the animated background -->
 
-    <field id="content" type="string" />
+    <field id="content" type="assocarray" onChange="onContentChange" />
 
     <!-- Set animationControl to "Start" to start the animation -->
 
@@ -14,7 +14,7 @@
 
   </interface>
 
-  <script type="text/brightscript" uri="pkg:/components/DetailsScreen/Data/Data.brs" />
+  <script type="text/brightscript" uri="pkg:/components/DetailsScreen/DataPanel/DataPanel.brs" />
 
   <children>
 
@@ -36,6 +36,12 @@
         uri="pkg:/images/curves.jpg" />
 
     </MaskGroup>
+
+    <LayoutGroup
+      id="metadataLayoutGroup"
+      itemSpacings="10"
+      addItemSpacingAfterChild="true"
+      translation="[190, 200]" />
 
     <Animation
       id="maskAnimation"

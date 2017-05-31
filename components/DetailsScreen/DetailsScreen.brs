@@ -101,14 +101,13 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
   ' it doesn't propagate to "HeroScene"
 
   if key = "options" then
+
     isKeyEventHandled = true
 
-
-  ' If the buttons are hidden (because the user navigated to the "Data" screen), and if the
+  ' If the buttons are hidden (because the user navigated to the "DataPanel" screen), and if the
   ' "left" or "back" button was pressed, then the user is returning to the "Details" screen.
 
   else if m.buttons.visible = false and (key = "left" or key = "back") then
-
 
     m.buttons.visible = true
 
@@ -165,12 +164,16 @@ sub onItemSelected()
 
     if m.dataPanel = invalid
       print "DetailsScreen.brs - [onItemSelected] Create dataPanel"
-      m.dataPanel = createObject("roSGNode", "Data")
+      m.dataPanel = createObject("roSGNode", "DataPanel")
     end if
 
-    ' Hide the buttons (they should not be displayed on the "Data" screen)
+    ' Hide the buttons (they should not be displayed on the "DataPanel" screen)
 
     m.buttons.visible = false
+
+    ' Pass the selected item's metadata to dataPanel
+
+    m.dataPanel.content = m.top.content.metadata
 
     ' Append the dataPanel to the PanelSet. This will cause the dataPanel to
     ' slide into view (the node will be removed when the user navigates back
@@ -187,23 +190,6 @@ sub onItemSelected()
 
     m.dataPanel.setFocus(true)
 
-  end if
-
-end sub
-
-' =============================================================================
-' slidePanels
-' =============================================================================
-
-sub slidePanels()
-
-  print "DetailsScreen.brs - [slidePanels] isGoingBack = " m.backgroundPanelSet.isGoingBack
-
-  if not m.backgroundPanelSet.isGoingBack
-
-  else
-    m.buttons.visible = true
-    m.backgroundPanel.setFocus(true)
   end if
 
 end sub

@@ -63,6 +63,18 @@ sub parseResponse()
             channelItem.url = channelItemElement.getAttributes().url
             channelItem.streamformat = "mp4"
 
+            channelItem.metadata = {
+              type: channelItemElement.getAttributes().type,
+              channels: channelItemElement.getAttributes().channels,
+              bitrate: channelItemElement.getAttributes().bitrate,
+              duration: channelItemElement.getAttributes().duration,
+              fileSize: channelItemElement.getAttributes().fileSize,
+              height: channelItemElement.getAttributes().height,
+              width: channelItemElement.getAttributes().width,
+              duration: channelItemElement.getAttributes().duration,
+              framerate: channelItemElement.getAttributes().framerate
+            }
+
             ' Get child elements of the <media:content> element
 
             mediaContent = channelItemElement.getChildElements()

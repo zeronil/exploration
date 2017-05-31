@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<component name="DataPanelItem" extends="Group" >
+
+  <interface>
+
+    <!-- String for the data's label -->
+
+    <field id="label" type="string" onChange="onLabelChange" />
+
+    <!-- String for the data's value -->
+
+    <field id="value" type="string" onChange="onValueChange" />
+
+  </interface>
+
+  <script type="text/brightscript" uri="pkg:/components/DetailsScreen/DataPanel/DataPanelItem.brs" />
+
+  <children>
+
+    <Label
+      id="itemLabel"
+      height="44"
+      width="200"
+      font="font:MediumBoldSystemFont"
+      horizAlign="left"
+      vertAlign="center"
+      ellipsisText="...:" />
+
+    <Label
+      id="itemValue"
+      height="44"
+      width="0"
+      font="font:MediumSystemFont"
+      horizAlign="left"
+      vertAlign="center"
+      translation="[220, 0]" />
+
+  </children>
+
+</component>
