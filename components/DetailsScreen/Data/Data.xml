@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<component name="Data" extends="Panel" >
+
+  <interface>
+
+    <!-- URL for the image used as the animated background -->
+
+    <field id="content" type="string" />
+
+    <!-- Set animationControl to "Start" to start the animation -->
+
+    <field id="animationControl" type="string" onChange="onAnimationChange" />
+
+  </interface>
+
+  <script type="text/brightscript" uri="pkg:/components/DetailsScreen/Data/Data.brs" />
+
+  <children>
+
+    <Poster
+      id="blurredImage"
+      width="1920"
+      height="1080"
+      uri="pkg:/images/curves-sharp.jpg" />
+
+    <MaskGroup
+      id="maskGroup"
+      maskOffset="[-2500, 0]"
+      maskUri="pkg:/images/curves-mask-2.png">
+
+      <Poster
+        id="sharpImage"
+        width="1920"
+        height="1080"
+        uri="pkg:/images/curves.jpg" />
+
+    </MaskGroup>
+
+    <Animation
+      id="maskAnimation"
+      easeFunction="linear"
+      repeat="true"
+      duration="10">
+
+      <Vector2DFieldInterpolator
+        key="[0.0, 1.0]"
+        keyValue="[[-2500, 0], [1000,0]]"
+        fieldToInterp="maskGroup.maskOffset"/>
+
+    </Animation>
+
+  </children>
+
+</component>

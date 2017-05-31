@@ -6,19 +6,19 @@ function init()
 
   print "DetailsScreen.brs - [init]"
 
-  m.top.observeField("visible", "onVisibleChange")
-  m.top.observeField("focusedChild", "onFocusedChildChange")
-
   m.buttons = m.top.findNode("Buttons")
   m.videoPlayer = m.top.findNode("VideoPlayer")
   m.poster = m.top.findNode("Poster")
   m.description = m.top.findNode("Description")
   m.detailsOverhang = m.top.findNode("detailsOverhang")
   m.overhangBackground = m.top.findNode("overhangBackground")
+  m.backgroundPanelSet = m.top.findNode("backgroundPanelSet")
   m.hudRectangle = m.top.findNode("HUDRectangle")
-  m.animatedBackground = m.top.findNode("animatedBackground")
+  m.backgroundPanel = m.top.findNode("backgroundPanel")
   m.fadeInBackgroundGroup = m.top.findNode("fadeInBackgroundGroup")
   m.fadeOutBackgroundGroup = m.top.findNode("fadeOutBackgroundGroup")
+
+  m.top.observeField("visible", "onVisibleChange")
 
   ' Create buttons
 
@@ -29,28 +29,6 @@ function init()
   end for
 
   m.buttons.content = contentList2SimpleNode(result)
-
-end function
-
-' =============================================================================
-' onKeyEvent - Called when a key on the remote is pressed
-' =============================================================================
-
-function onKeyEvent(key as String, isPressed as Boolean) as Boolean
-
-  print "DetailsScreen.brs - [onKeyEvent] key = "; key; ", isPressed = "; isPressed
-
-  isKeyEventHandled = false
-
-  ' There doesn't seem to be a way to disable the "Options" in the Overhang in "HeroScene",
-  ' so if the options button is pressed, set the flag that the key has been handled so that
-  ' it doesn't propagate to "HeroScene"
-
-  if key = "options" then
-    isKeyEventHandled = true
-  end if
-
-  return isKeyEventHandled
 
 end function
 
@@ -83,7 +61,7 @@ sub onVisibleChange()
     ' Start the animation of the background images
 
     m.fadeInBackgroundGroup.control = "start"
-    m.animatedBackground.visible = true
+    m.backgroundPanel.visible = true
 
   ' Else exiting DetailsScreen
 
@@ -97,7 +75,7 @@ sub onVisibleChange()
 
     ' Stop the animation of the background images
 
-    m.animatedBackground.visible = false
+    m.backgroundPanel.visible = false
 
     ' Make sure the Video component is not playing a video and is not visible
 
@@ -109,15 +87,123 @@ sub onVisibleChange()
 end sub
 
 ' =============================================================================
-' onFocusedChildChange - Set focus to Buttons when returning from Video PLayer
+' onKeyEvent - Called when a key on the remote is pressed
 ' =============================================================================
 
-sub onFocusedChildChange()
+function onKeyEvent(key as String, isPressed as Boolean) as Boolean
 
-  print "DetailsScreen.brs - [onFocusedChildChange]"
+  print "DetailsScreen.brs - [onKeyEvent] key = "; key; ", isPressed = "; isPressed
 
-  if m.top.isInFocusChain() and not m.buttons.hasFocus() and not m.videoPlayer.hasFocus() then
+  isKeyEventHandled = false
+
+  ' There doesn't seem to be a way to disable the "Options" in the Overhang in "HeroScene",
+  ' so if the options button is pressed, set the flag that the key has been handled so that
+  ' it doesn't propagate to "HeroScene"
+
+  if key = "options" then
+    isKeyEventHandled = true
+
+
+  ' If the buttons are hidden (because the user navigated to the "Data" screen), and if the
+  ' "left" or "back" button was pressed, then the user is returning to the "Details" screen.
+
+  else if m.buttons.visible = false and (key = "left" or key = "back") then
+
+
+    m.buttons.visible = true
+
+    ' When backgroundPanel gains focus, the backgroundPanel will slide into view, but
+    ' the buttons must then have focus restored so that they are usable.
+
+    m.backgroundPanel.setFocus(true)
     m.buttons.setFocus(true)
+
+    ' Stop the background animation in the dataPanel
+
+    m.dataPanel.animationControl = "stop"
+
+    isKeyEventHandled = true
+
+  end if
+
+  return isKeyEventHandled
+
+end function
+
+' =============================================================================
+' onItemSelected - Button press handler
+' =============================================================================
+
+sub onItemSelected()
+
+  print "DetailsScreen.brs - [onItemSelected] button = " m.top.itemSelected
+
+  ' Play button
+
+  if m.top.itemSelected = 0
+
+    ' Stop the background image animation
+
+    m.backgroundPanel.visible = false
+
+    ' Make the Video component visible and begin playback
+
+    m.videoPlayer.visible = true
+    m.videoPlayer.setFocus(true)
+    m.videoPlayer.control = "play"
+
+    ' Watch for changes to the state of the Video component (e.g., video playback stopped)
+
+    m.videoPlayer.observeField("state", "onVideoPlayerStateChange")
+
+  ' Data button
+
+  else if m.top.itemSelected = 1
+
+    ' If the panel that displays the data for the currently selected item has not been
+    ' created, create the node now and save a reference.
+
+    if m.dataPanel = invalid
+      print "DetailsScreen.brs - [onItemSelected] Create dataPanel"
+      m.dataPanel = createObject("roSGNode", "Data")
+    end if
+
+    ' Hide the buttons (they should not be displayed on the "Data" screen)
+
+    m.buttons.visible = false
+
+    ' Append the dataPanel to the PanelSet. This will cause the dataPanel to
+    ' slide into view (the node will be removed when the user navigates back
+    ' using the "left" or "back" button)
+
+    m.backgroundPanelSet.appendChild(m.dataPanel)
+
+    ' Start the background animation in the dataPanel
+
+    m.dataPanel.animationControl = "start"
+
+    ' Set the focus to the dataPanel so that when the user presses the "left" or "back"
+    ' button the backgroundPanel will slide into view when the focus changes.
+
+    m.dataPanel.setFocus(true)
+
+  end if
+
+end sub
+
+' =============================================================================
+' slidePanels
+' =============================================================================
+
+sub slidePanels()
+
+  print "DetailsScreen.brs - [slidePanels] isGoingBack = " m.backgroundPanelSet.isGoingBack
+
+  if not m.backgroundPanelSet.isGoingBack
+
+  else
+    m.buttons.visible = true
+    m.backgroundPanel.setFocus(true)
   end if
 
 end sub
@@ -132,49 +218,19 @@ sub onVideoVisibleChange()
 
   if m.videoPlayer.visible = false and m.top.visible = true
 
-    ' Make sure the buttons have the focus
+  ' Make sure the buttons have the focus
 
-    m.buttons.setFocus(true)
+  m.buttons.setFocus(true)
 
-    ' Make sure the Video component is not playing a video
+  ' Make sure the Video component is not playing a video
 
-    m.videoPlayer.control = "stop"
+  m.videoPlayer.control = "stop"
 
-    ' Re-start the background image animation
+  ' Re-start the background image animation
 
-    m.animatedBackground.visible = true
+  m.backgroundPanel.visible = true
 
-  end if
-
-end sub
-
-' =============================================================================
-' onItemSelected - Button press handler
-' =============================================================================
-
-sub onItemSelected()
-
-  print "DetailsScreen.brs - [onItemSelected] button = " m.top.itemSelected
-
-  ' First button in the list is Play
-
-  if m.top.itemSelected = 0
-
-    ' Stop the background image animation
-
-    m.animatedBackground.visible = false
-
-    ' Make the Video component visible and begin playback
-
-    m.videoPlayer.visible = true
-    m.videoPlayer.setFocus(true)
-    m.videoPlayer.control = "play"
-
-    ' Watch for changes to the state of the Video component (e.g., video playback stopped)
-
-    m.videoPlayer.observeField("state", "onVideoPlayerStateChange")
-
-  end if
+end if
 
 end sub
 
@@ -234,7 +290,7 @@ sub onContentChange()
   ' Initialize the Poster images with the URI of the the content's background image
 
   m.poster.uri = m.top.content.hdBackgroundImageUrl
-  m.animatedBackground.imageURL = m.top.content.hdBackgroundImageUrl
+  m.backgroundPanel.imageURL = m.top.content.hdBackgroundImageUrl
 
 end sub
 
