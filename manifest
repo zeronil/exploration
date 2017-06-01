@@ -1,12 +1,10 @@
 #
-#  Copyright (c) 2016 Roku, Inc. All rights reserved.
 #  Roku Channel Manifest File
-#  Full spec at bit.ly/roku-manifest-file
 #
 
 # Channel Details
-title=HeroGridChannel
-subtitle=Roku Sample Channel App
+title=Exploration
+subtitle=Roku Platform Exploration
 major_version=1
 minor_version=1
 build_version=1
