@@ -7,7 +7,7 @@ title=Exploration
 subtitle=Roku Platform Exploration
 major_version=1
 minor_version=0
-build_version=0
+build_version=1
 
 # Channel Assets
 mm_icon_focus_sd=pkg:/images/channel-poster_sd.png

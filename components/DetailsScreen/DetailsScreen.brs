@@ -115,6 +115,7 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
     ' the buttons must then have focus restored so that they are usable.
 
     m.backgroundPanel.setFocus(true)
+    sleep(500)
     m.buttons.setFocus(true)
 
     ' Stop the background animation in the dataPanel
