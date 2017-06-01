@@ -24,7 +24,14 @@ sub init()
   ' Initially selected button
 
   m.buttons.checkedItem = 0
+  m.buttons.itemSelected = 0
   m.buttons.focusedColor = m.buttonDefinitions[0].color
+
+  ' Make sure a default color scheme is set
+
+  if not m.global.hasField("keyColor")
+    m.global.addFields( {keyColor: m.top.selectedColor, keyColorTint: m.top.selectedColorTint} )
+  end if
 
 end sub
 
@@ -72,12 +79,8 @@ sub onButtonSelectedChanged()
   ' Save the selected color as a global "keyColor" (the keyColor is used by CustomItem
   ' as the highlight color for selected RowList itens)
 
-  if not m.global.hasField("keyColor")
-    m.global.addFields( {keyColor: m.top.selectedColor, keyColorTint: m.top.selectedColorTint} )
-  else
-    m.global.keyColor = m.top.selectedColor
-    m.global.keyColorTint = m.top.selectedColorTint
-  end if
+  m.global.keyColor = m.top.selectedColor
+  m.global.keyColorTint = m.top.selectedColorTint
 
   print "OptionsScreen.brs - [onButtonSelectedChanged]" m.top.itemSelected " (keyColor = " m.global.keyColor " " m.top.selectedColor ")"
 
@@ -89,16 +92,33 @@ end sub
 
 function contentList2SimpleNode(contentList as Object, nodeType = "ContentNode" as String) as Object
 
-  print "OptionsScreen.brs - [contentList2SimpleNode]"
+  print "OptionsScreen.brs - [contentList2SimpleNode] " nodeType
 
   result = createObject("roSGNode", nodeType)
 
   if result <> invalid then
 
     for each itemAA in contentList
+
       item = createObject("roSGNode", nodeType)
+
+      ' If the node does not have the property found in the associative array, then
+      ' create the property in the node (as a string)
+
+      for each property in itemAA
+
+        if not item.hasField(property) then
+          item.addField(property, "string", false)
+        end if
+
+      end for
+
+      ' Set the property value for all properties found in the associative array item
+      ' and append the node to the root node
+
       item.setFields(itemAA)
       result.appendChild(item)
+
     end for
 
   end if

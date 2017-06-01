@@ -25,7 +25,7 @@ function init()
   result = []
 
   for each button in ["Play", "Data"]
-  result.push({title: button})
+    result.push({title: button})
   end for
 
   m.buttons.content = contentList2SimpleNode(result)
