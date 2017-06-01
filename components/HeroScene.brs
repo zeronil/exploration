@@ -108,6 +108,7 @@ sub onReadSettingComplete()
       m.OptionsScreen.itemSelected = StrToI(m.readSettingTask.settingValueRead)
       m.OptionsScreen.itemChecked = StrToI(m.readSettingTask.settingValueRead)
     else
+      m.OptionsScreen.itemSelected = 0
       m.OptionsScreen.itemChecked = 0
     end if
 
@@ -193,7 +194,7 @@ sub onHeroRowItemSelected()
   m.DetailsScreen.setFocus(true)
   m.DetailsScreen.visible = true
 
-  ' Since the Overhang in DetailsScreen is translucent, make the OverhangBar invisible so that 
+  ' Since the Overhang in DetailsScreen is translucent, make the OverhangBar invisible so that
   ' it is not seen behind DetailsScreen
 
   m.OverhangBar.visible = false
