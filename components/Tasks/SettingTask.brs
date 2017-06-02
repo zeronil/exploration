@@ -20,12 +20,12 @@ sub executeOperation()
   m.settingName = m.top.settingName
   m.settingValue = m.top.settingValue
 
-  if m.settingName <> invalid and Len(m.settingName) > 0 then
+  if m.settingName <> invalid and m.settingName.Len() > 0 then
 
     ' If settingName and settingValue are both specified then perform a write;
     ' otherwise, perform a read .
 
-    if m.settingValue <> invalid and Len(m.settingValue) > 0 then
+    if m.settingValue <> invalid and m.settingValue.Len() > 0 then
       writeSetting()
     else
       readSetting()

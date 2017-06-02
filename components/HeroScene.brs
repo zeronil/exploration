@@ -19,8 +19,11 @@ sub init()
 
   m.OverhangBar = m.top.findNode("OverhangBar")
   m.OverhangBackground = m.top.FindNode("OverhangBackground")
-  m.OverhangFadeInColor = m.top.findNode("OverhangFadeInColorInterp")
   m.OverhangBackgroundGray = m.top.findNode("OverhangBackgroundGray")
+  m.OverhangFadeInColor = m.top.findNode("OverhangFadeInColorInterp")
+
+  m.OverhangBackground.height = m.global.overhangHeight
+  m.OverhangBackgroundGray.height = m.global.overhangHeight
 
   ' OptionsScreen node
 
@@ -104,13 +107,18 @@ sub onReadSettingComplete()
     ' If a setting value was read, select and set the checkmark for the item on the OptionsScreen.
     ' If a value was not read, default to the first item in the list.
 
-    if m.readSettingTask.settingValueRead <> invalid
+    if m.readSettingTask.settingValueRead <> invalid and Len(m.readSettingTask.settingValueRead) > 0 then
       m.OptionsScreen.itemSelected = StrToI(m.readSettingTask.settingValueRead)
       m.OptionsScreen.itemChecked = StrToI(m.readSettingTask.settingValueRead)
     else
       m.OptionsScreen.itemSelected = 0
       m.OptionsScreen.itemChecked = 0
     end if
+
+    ' Initialize overhang with the selected color
+
+    print "HeroScene.brs - [onReadSettingComplete] Overhang color = " m.OptionsScreen.selectedColor
+    m.OverhangBackground.color = m.OptionsScreen.selectedColor
 
   end if
 

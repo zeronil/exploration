@@ -112,10 +112,12 @@ function onKeyEvent(key as String, isPressed as Boolean) as Boolean
     m.buttons.visible = true
 
     ' When backgroundPanel gains focus, the backgroundPanel will slide into view, but
-    ' the buttons must then have focus restored so that they are usable.
+    ' the buttons must then have focus restored so that they are usable (it seem that there
+    ' must be a delay before changing the focus to the buttons to ensure that the slide
+    ' transition to backgroundPanel actually takes place)
 
     m.backgroundPanel.setFocus(true)
-    sleep(500)
+    sleep(1000)
     m.buttons.setFocus(true)
 
     ' Stop the background animation in the dataPanel

@@ -4,9 +4,24 @@
 
 sub init()
 
-  ' Uncomment the print statements to see where and when the functions are called
+  ' Get the Roku device model that the application is running on
 
-  print "HeroScreen.brs - [init]"
+  deviceInfo = CreateObject("roDeviceInfo")
+  deviceModel = deviceInfo.getModel()
+
+  ' Set the height of the colored part of the overhang depending upon the device
+
+  if deviceModel = "4200X" then
+    overhangHeight = 140
+  else
+    overhangHeight = 150
+  end if
+
+  ' Add device specific data to global variables
+
+  m.global.addFields({deviceModel: deviceModel, overhangHeight: overhangHeight})
+
+  print "HeroScreen.brs - [init] " m.global.deviceModel " (overhangHeight =" m.global.overhangHeight ")"
 
   ' Get references to child nodes
 

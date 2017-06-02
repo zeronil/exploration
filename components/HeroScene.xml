@@ -26,9 +26,8 @@
 
     <Rectangle
       id="OverhangBackground"
-      color="0xFF0000"
+      color="0x000000"
       width="1920"
-      height="150"
       translation="[0,0]" />
 
     <Rectangle
@@ -36,7 +35,6 @@
       color="0x333333FF"
       opacity="0.0"
       width="1920"
-      height="150"
       translation="[0,0]" />
 
     <!-- Overhang Node -->
