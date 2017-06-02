@@ -106,7 +106,6 @@
     <Rectangle
       id="overhangBackground"
       width="1920"
-      height="150"
       opacity="0.8"
       translation="[0,0]" />
 

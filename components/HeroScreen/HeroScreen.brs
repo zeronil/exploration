@@ -43,7 +43,6 @@ sub init()
   '   rowHeight - The height of the row of the list. The value overrides the height specified in the RowList itemSize field.
   '   rowItemSize - The width and height of the items in the row.
 
-
   requests = [
     ' Uncomment this line to simulate a bad request and make the dialog box appear
     ' "bad request",

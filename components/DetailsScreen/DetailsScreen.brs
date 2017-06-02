@@ -12,11 +12,13 @@ function init()
   m.description = m.top.findNode("Description")
   m.detailsOverhang = m.top.findNode("detailsOverhang")
   m.overhangBackground = m.top.findNode("overhangBackground")
+  m.overhangBackground.height = m.global.overhangHeight
   m.backgroundPanelSet = m.top.findNode("backgroundPanelSet")
   m.hudRectangle = m.top.findNode("HUDRectangle")
   m.backgroundPanel = m.top.findNode("backgroundPanel")
   m.fadeInBackgroundGroup = m.top.findNode("fadeInBackgroundGroup")
   m.fadeOutBackgroundGroup = m.top.findNode("fadeOutBackgroundGroup")
+
 
   m.top.observeField("visible", "onVisibleChange")
 
